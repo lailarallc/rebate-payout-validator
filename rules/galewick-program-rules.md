@@ -1,6 +1,6 @@
 # Galewick Climate Systems — 2025 Channel Incentive Program Rules
 
-**Version:** 0.1-draft · **Status:** DRAFT — pending owner distance review · **Program year:** January 1 – December 31, 2025
+**Version:** 1.0 · **Status:** Published — parameters drawn by seed, not by hand · **Program year:** January 1 – December 31, 2025
 
 > Galewick Climate Systems is an invented company. These rules are invented for the Payout
 > Math demonstration. No element mirrors any real program operator or client.
@@ -33,20 +33,25 @@ A2.1 Only the models in **Table A1** earn a bonus. Models not listed earn nothin
 accessories, and thermostats never earn.
 
 A2.2 The bonus is the Table A1 amount for the model installed, at the rate in effect on the
-**install date**: the Spring Rate from March 1 through May 31, 2025, and the Standard Rate on
-every other day of the program year.
+**install date**: the Spring Rate from March 1 through April 30, 2025, and the Standard Rate on
+every other day of the program year. The Spring Rate is a cooling-season promotion: furnaces
+earn the same amount year-round.
+
+> Every number in these rules is a seeded draw from a stated range. None was chosen by hand.
+> The draws and their ranges are in `rules/parameters.json`. The basis for each range is in
+> `DECISIONS.md`.
 
 **Table A1 — Eligible models and bonus per unit**
 
-| Model | Description | Standard Rate | Spring Rate (Mar 1 – May 31) |
+| Model | Description | Standard Rate | Spring Rate (Mar 1 – Apr 30) |
 |---|---|---|---|
-| GW-HP16 | Heat pump, 16 SEER2 | $60 | $90 |
-| GW-HP18 | Heat pump, 18 SEER2 | $110 | $150 |
-| GW-HP20V | Heat pump, variable speed | $175 | $225 |
-| GW-AC15 | Air conditioner, 15 SEER2 | $40 | $65 |
-| GW-AC17 | Air conditioner, 17 SEER2 | $80 | $110 |
-| GW-FG96 | Gas furnace, 96% AFUE | $70 | $70 |
-| GW-FG98M | Gas furnace, 98% AFUE, modulating | $120 | $120 |
+| GW-AC15 | Air conditioner, 15 SEER2 | $50 | $75 |
+| GW-HP16 | Heat pump, 16 SEER2 | $70 | $105 |
+| GW-FG96 | Gas furnace, 96% AFUE | $90 | $90 |
+| GW-AC17 | Air conditioner, 17 SEER2 | $120 | $180 |
+| GW-HP18 | Heat pump, 18 SEER2 | $135 | $200 |
+| GW-FG98M | Gas furnace, 98% AFUE, modulating | $160 | $160 |
+| GW-HP20V | Heat pump, variable speed | $175 | $260 |
 
 **Not eligible (common in the channel, listed for clarity):** GW-AC13 (13.4 SEER2 air
 conditioner), GW-HP14 (14.3 SEER2 heat pump), GW-FG80 (80% AFUE furnace).
@@ -100,14 +105,14 @@ amount, not the amount of the model ordered.
 A8.1 This is the only rule under which a claim may be paid less than its full Table A1 amount.
 
 A8.2 If a claim was **filed on time** (A4.1) and **one** required document (A5.1 a or b) was
-received after the 60-day deadline but no more than **30 days** after it, the claim earns
-**50%** of its Table A1 amount.
+received after the 60-day deadline but no more than **15 days** after it, the claim earns
+**25%** of its Table A1 amount.
 
 A8.3 Any other partial payment has no basis in these rules.
 
 ### A9. Paying earned bonuses
 
-A9.1 Every claim that meets A1 through A7 earns its full Table A1 amount, or 50% under A8.
+A9.1 Every claim that meets A1 through A7 earns its full Table A1 amount, or 25% under A8.
 Galewick owes that amount whether the claim was paid, denied, or left unprocessed.
 
 A9.2 Bonuses are paid by check or ACH to the enrolled contractor of record.
@@ -153,15 +158,15 @@ the next.
 
 | Tier | Qualifying volume | Rate | How the rate applies |
 |---|---|---|---|
-| 1 | under $250,000 | 0% | — |
-| 2 | $250,000 – $749,999.99 | 2.0% | Retroactive: applies to all qualifying volume from the first dollar |
-| 3 | $750,000 – $1,499,999.99 | 3.0% | Retroactive: applies to all qualifying volume from the first dollar |
-| 4 | $1,500,000 and over | 3.0% on the first $1,500,000, plus **4.5%** on volume above $1,500,000 | Incremental above the Tier 4 threshold only |
+| 1 | under $325,000 | 0% | — |
+| 2 | $325,000 – $1,049,999.99 | 1.75% | Retroactive: applies to all qualifying volume from the first dollar |
+| 3 | $1,050,000 – $2,099,999.99 | 3.25% | Retroactive: applies to all qualifying volume from the first dollar |
+| 4 | $2,100,000 and over | 3.25% on the first $2,100,000, plus **5.25%** on volume above $2,100,000 | Incremental above the Tier 4 threshold only |
 
 ### B5. Growth bonus
 
-B5.1 A distributor earns an additional **1.0%** on the quarter's qualifying volume if that
-volume is at least **110%** of its baseline.
+B5.1 A distributor earns an additional **0.75%** on the quarter's qualifying volume if that
+volume is at least **113%** of its baseline.
 
 B5.2 The **baseline** is the distributor's qualifying volume for the **same quarter of 2024**,
 calculated under B3. Baselines are listed in Table B3. A distributor with no 2024 baseline
@@ -240,4 +245,6 @@ These are data, published alongside the rules. They are generated seed-locked wi
 
 ## Changelog
 
-- **0.1-draft (2026-10-15):** first draft for owner distance review.
+- **1.0 (2026-10-16):** every program parameter re-drawn as a seeded draw from
+  research-plausible ranges (distance by construction). Rules text unchanged from 0.1-draft.
+- **0.1-draft (2026-10-15):** first draft; hand-drafted values, all since replaced.

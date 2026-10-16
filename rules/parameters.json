@@ -1,0 +1,213 @@
+{
+  "seed_string": "galewick-climate-systems/program-year-2025/parameters",
+  "seed": 537753870,
+  "program_year": 2025,
+  "filing_deadline_days": 60,
+  "late_doc_grace_days": 15,
+  "late_doc_partial_pct": 25,
+  "spring_start_month": 3,
+  "spring_end_month": 4,
+  "spring_uplift_pct": 50,
+  "models": [
+    {
+      "model": "GW-AC15",
+      "description": "Air conditioner, 15 SEER2",
+      "standard_usd": 50,
+      "spring_usd": 75
+    },
+    {
+      "model": "GW-HP16",
+      "description": "Heat pump, 16 SEER2",
+      "standard_usd": 70,
+      "spring_usd": 105
+    },
+    {
+      "model": "GW-FG96",
+      "description": "Gas furnace, 96% AFUE",
+      "standard_usd": 90,
+      "spring_usd": 90
+    },
+    {
+      "model": "GW-AC17",
+      "description": "Air conditioner, 17 SEER2",
+      "standard_usd": 120,
+      "spring_usd": 180
+    },
+    {
+      "model": "GW-HP18",
+      "description": "Heat pump, 18 SEER2",
+      "standard_usd": 135,
+      "spring_usd": 200
+    },
+    {
+      "model": "GW-FG98M",
+      "description": "Gas furnace, 98% AFUE, modulating",
+      "standard_usd": 160,
+      "spring_usd": 160
+    },
+    {
+      "model": "GW-HP20V",
+      "description": "Heat pump, variable speed",
+      "standard_usd": 175,
+      "spring_usd": 260
+    }
+  ],
+  "not_eligible": [
+    {
+      "model": "GW-AC13",
+      "description": "Air conditioner, 13.4 SEER2"
+    },
+    {
+      "model": "GW-HP14",
+      "description": "Heat pump, 14.3 SEER2"
+    },
+    {
+      "model": "GW-FG80",
+      "description": "Gas furnace, 80% AFUE"
+    }
+  ],
+  "tiers": [
+    {
+      "tier": 1,
+      "threshold_usd": 0,
+      "rate_pct": 0.0,
+      "method": "none"
+    },
+    {
+      "tier": 2,
+      "threshold_usd": 325000,
+      "rate_pct": 1.75,
+      "method": "retroactive"
+    },
+    {
+      "tier": 3,
+      "threshold_usd": 1050000,
+      "rate_pct": 3.25,
+      "method": "retroactive"
+    },
+    {
+      "tier": 4,
+      "threshold_usd": 2100000,
+      "rate_pct": 5.25,
+      "method": "incremental"
+    }
+  ],
+  "growth_threshold_pct": 113,
+  "growth_bonus_pct": 0.75,
+  "ranges": {
+    "filing_deadline_days": {
+      "low": 30,
+      "high": 90,
+      "step": 15,
+      "basis": "CITE: claim windows 30-60 days (ZINFI), 60-90 days (utility rules, OEM warranty registration)"
+    },
+    "late_doc_grace_days": {
+      "low": 15,
+      "high": 45,
+      "step": 15,
+      "basis": "STRUCTURAL"
+    },
+    "late_doc_partial_pct": {
+      "low": 25,
+      "high": 75,
+      "step": 25,
+      "basis": "STRUCTURAL"
+    },
+    "spring_start_month": {
+      "low": 2,
+      "high": 4,
+      "step": 1,
+      "basis": "DIRECTION: cooling-season demand peaks spring/summer"
+    },
+    "spring_length_months": {
+      "low": 2,
+      "high": 3,
+      "step": 1,
+      "basis": "DIRECTION: SPIFF runs 30-90 days (ZINFI)"
+    },
+    "spring_uplift_pct": {
+      "low": 20,
+      "high": 60,
+      "step": 5,
+      "basis": "STRUCTURAL"
+    },
+    "bonus_floor_usd": {
+      "low": 25,
+      "high": 60,
+      "step": 5,
+      "basis": "CITE: per-unit SPIFF $25-$100 (Prospeo), $100-$200 (ZINFI); vendor, illustrative"
+    },
+    "bonus_ceiling_usd": {
+      "low": 150,
+      "high": 300,
+      "step": 5,
+      "basis": "CITE: per-unit HVAC $150-$600 (Pipeline On, attributed ACHR News; unverified)"
+    },
+    "tier2_threshold_usd": {
+      "low": 150000,
+      "high": 400000,
+      "step": 25000,
+      "basis": "DIRECTION: tier examples at $500k / $1M (Hyperbots), scaled to a quarter"
+    },
+    "tier3_multiple": {
+      "low": 2.5,
+      "high": 3.5,
+      "step": 0.25,
+      "basis": "STRUCTURAL"
+    },
+    "tier4_multiple": {
+      "low": 1.8,
+      "high": 2.2,
+      "step": 0.1,
+      "basis": "STRUCTURAL"
+    },
+    "tier2_rate_pct": {
+      "low": 1.5,
+      "high": 2.5,
+      "step": 0.25,
+      "basis": "CITE: tier rates 2-4% (Hyperbots); vendor, illustrative"
+    },
+    "tier3_step_pct": {
+      "low": 0.5,
+      "high": 1.5,
+      "step": 0.25,
+      "basis": "CITE: tier rates 2-4% (Hyperbots); vendor, illustrative"
+    },
+    "tier4_step_pct": {
+      "low": 1.0,
+      "high": 2.0,
+      "step": 0.25,
+      "basis": "STRUCTURAL: incremental top tier above Tier 3 rate"
+    },
+    "growth_threshold_pct": {
+      "low": 105,
+      "high": 115,
+      "step": 1,
+      "basis": "STRUCTURAL"
+    },
+    "growth_bonus_pct": {
+      "low": 0.5,
+      "high": 1.5,
+      "step": 0.25,
+      "basis": "STRUCTURAL"
+    }
+  },
+  "draws": {
+    "filing_deadline_days": 60,
+    "late_doc_grace_days": 15,
+    "late_doc_partial_pct": 25,
+    "spring_start_month": 3,
+    "spring_length_months": 2,
+    "spring_uplift_pct": 50,
+    "bonus_floor_usd": 50,
+    "bonus_ceiling_usd": 180,
+    "tier2_threshold_usd": 325000,
+    "tier3_multiple": 3.25,
+    "tier4_multiple": 2.0,
+    "tier2_rate_pct": 1.75,
+    "tier3_step_pct": 1.5,
+    "tier4_step_pct": 2.0,
+    "growth_threshold_pct": 113,
+    "growth_bonus_pct": 0.75
+  }
+}
