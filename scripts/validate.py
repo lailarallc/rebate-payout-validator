@@ -151,8 +151,8 @@ def validate_claims():
         full = amount_cents(model, inst) if model in ELIGIBLE else 0
         earned = 0 if v else (full * PARTIAL_PCT // 100 if partial else full)
 
-        # C0 / A9.3: pending and received inside the processing window = still in process
-        if r["status"] == "pending" and (AS_OF - recv).days < PROCESSING:
+        # C0 / A9.3: pending and received within the last PROCESSING days = still in process
+        if r["status"] == "pending" and (AS_OF - recv).days <= PROCESSING:
             in_process += 1
             continue
         if paid == earned:

@@ -124,6 +124,9 @@ No re-tuning if the verdict is undramatic. The verdict lands where it lands.
 **Re-run after realism fixes (rulebook v1.1, 2026-10-16):** claim share 11.14% PASS; overpaid-dollar share
 2.54% ($332,822 of $13,088,044) FAIL. Same cause, same disposition: disclosed, not re-tuned.
 
+**Re-run after re-review fixes R1–R6 (2026-10-16):** claim share 11.16% PASS; overpaid-dollar share 2.27%
+($302,607 of $13,310,557) FAIL. Disclosed, not re-tuned.
+
 **Why the dollar bound fails, stated plainly:** the pinned per-record rates (C 2.0 / O 0.75 / R 0.2)
 put about 2–11% of *records* in defect. Distributor rebates are 91% of approved dollars, but only 60 of
 640 distributor-quarters carry a defect, and a defect there moves a fraction of the rebate, not all of

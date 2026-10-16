@@ -50,7 +50,7 @@ INELIGIBLE = [m["model"] for m in PARAMS["not_eligible"]]
 TIERS = PARAMS["tiers"]
 
 AS_OF = date(YEAR + 1, 2, 27)                         # rulebook C0
-DECIDED_BY = AS_OF - timedelta(days=PROCESSING)       # received on/before this: decided
+DECIDED_BY = AS_OF - timedelta(days=PROCESSING + 1)   # received on/before this: decided (A9.3 "more than")
 
 BASE_OF = {"AC": "GW-AC13", "HP": "GW-HP14", "FG": "GW-FG80"}   # ineligible builder grade
 ENTRY_OF = {"AC": "GW-AC15", "HP": "GW-HP16", "FG": "GW-FG96"}  # lowest eligible step
@@ -76,11 +76,12 @@ LIST_PRICE = {"GW-AC13": 210000, "GW-AC15": 265000, "GW-AC17": 340000, "GW-HP14"
 PRICE_INCREASE_FROM = date(YEAR, 7, 1)
 NON_B1 = ["PARTS", "ACCESSORIES", "CONTROLS", "FREIGHT"]
 
-PREFIX = ["Bren", "Calv", "Dunr", "Marv", "Holv", "Kelv", "Linq", "Runn", "Torv", "Wexl",
-          "Brayl", "Corr", "Fenw", "Garv", "Lomb", "Pell", "Quen", "Rosk", "Ulst", "Vant",
-          "Yarr", "Ober", "Nesh", "Thrav", "Ilsk", "Merr", "Odd", "Sorv", "Tamb", "Zell"]
+PREFIX = ["Bren", "Calv", "Dorn", "Marv", "Holv", "Kelv", "Lisk", "Torv", "Wexl", "Brayl",
+          "Fenw", "Garv", "Lomb", "Quen", "Rosk", "Ulst", "Vant", "Ober", "Nesh", "Thrav",
+          "Ilsk", "Sorv", "Tamb", "Alvan", "Corv", "Delm", "Esk", "Harv", "Jasp", "Kerl",
+          "Morv", "Ostr", "Penn", "Rav", "Selb", "Tarv", "Varn", "Wend", "Yelv", "Brix"]
 SUFFIX = ["vale", "rick", "mont", "dale", "stead", "wyn", "avel", "brook", "ridge", "mere",
-          "holt", "crest"]
+          "holt", "crest", "gate", "worth", "combe", "hurst"]
 CONTRACTOR_KIND = ["Heating & Air", "Comfort Co.", "Mechanical", "Climate Services", "Air & Heat",
                    "Home Comfort", "HVAC"]
 DISTRIBUTOR_KIND = ["HVAC Supply", "Distribution", "Supply Co.", "Equipment Supply"]
@@ -154,8 +155,15 @@ def n_for(tag, base):
 
 
 def place(rng, used):
+    """An invented place-style name. Rejects machine-joined tells (review R2): a tripled letter,
+    a doubled letter at the join, or a q without a u."""
     while True:
-        name = rng.choice(PREFIX) + rng.choice(SUFFIX)
+        pre, suf = rng.choice(PREFIX), rng.choice(SUFFIX)
+        name = pre + suf
+        low = name.lower()
+        if (any(low[i] == low[i + 1] == low[i + 2] for i in range(len(low) - 2))
+                or pre[-1].lower() == suf[0] or ("q" in low and "qu" not in low)):
+            continue
         if name not in used:
             used.add(name)
             return name
@@ -174,16 +182,18 @@ def make_distributors(rng):
     for i in range(N_DISTRIBUTORS):
         # Assortment: the three builder-grade units plus 3-6 eligible models (6-9 SKUs).
         carried = sorted(INELIGIBLE + rng.sample(eligible, rng.randint(3, 6)))
+        new = rng.random() < 0.06   # joined in late 2024: no 2024 same-quarter baseline (review R3)
         out.append({
             "distributor_id": f"D{i + 1:03d}",
             "name": f"{place(rng, used)} {rng.choice(DISTRIBUTOR_KIND)}",
-            "enrollment_date": rand_date(rng, date(2016, 1, 1), date(YEAR - 1, 10, 1)),
+            "enrollment_date": (rand_date(rng, date(YEAR - 1, 10, 1), date(YEAR - 1, 12, 31)) if new
+                                else rand_date(rng, date(2016, 1, 1), date(YEAR - 1, 9, 30))),
             "base": rng.lognormvariate(math.log(650_000), 0.75) * 100,   # cents per quarter
             "discount": rng.uniform(0.88, 0.97),
             "growth": rng.gauss(1.03, 0.08),
             "assortment": carried,
             "nonb1_share": rng.uniform(0.08, 0.18),
-            "new_in_year": rng.random() < 0.06,   # no 2024 baseline
+            "new_in_year": new,
         })
     return out
 
@@ -283,8 +293,10 @@ def clean_claim(rng, serials, c, model=None, install=None):
         due = inst + timedelta(days=DEADLINE)
         inv = received
         if rng.random() < 0.15:
-            inv = min(next_business_day(received + timedelta(days=rng.randint(1, 20))), due)
-        reg = inst + timedelta(days=min(int(rng.lognormvariate(math.log(3), 1.0)), DEADLINE))
+            inv = next_business_day(received + timedelta(days=rng.randint(1, 20)))
+            if inv > due:          # re-draw, never clamp to the deadline (review R6)
+                inv = received
+        reg = inst + timedelta(days=int(rng.lognormvariate(math.log(3), 1.0)))
         if reg > due or inv > due:
             continue
         break
@@ -356,9 +368,11 @@ def generate_claims(rng, contractors):
     assert n5 == 0
 
     # #6 filed after deadline, paid anyway
-    late_ok = lambda cl: cl["install_date"] + timedelta(days=DEADLINE + 46) <= DECIDED_BY  # noqa: E731
-    for cl in draw(6, where=late_ok):
-        cl["received_date"] = next_business_day(cl["install_date"] + timedelta(days=DEADLINE + rng.randint(1, 40)))
+    # Late margin fits before the decided-by date, so Q4 installs can be late too (review R4).
+    room = lambda cl: (DECIDED_BY - cl["install_date"]).days - DEADLINE - 4  # noqa: E731
+    for cl in draw(6, where=lambda cl: room(cl) >= 1):
+        cl["received_date"] = next_business_day(
+            cl["install_date"] + timedelta(days=DEADLINE + rng.randint(1, min(40, room(cl)))))
         cl["invoice_doc_date"] = cl["received_date"]
         cl["planted"].append(6)
 

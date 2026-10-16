@@ -153,7 +153,7 @@
 		</div>
 		<div class="stat">
 			<span class="ll-benchmark-value">{count(v.multi_defect_records)}</span>
-			<span class="stat-label">of them break more than one</span>
+			<span class="stat-label">of them break more than one — a claim for a substituted model also mismatches its invoice (A5.2)</span>
 		</div>
 		<div class="stat">
 			<span class="ll-benchmark-value">{rebateShare}</span>
@@ -184,7 +184,8 @@
 		A decision that breaks several rules is counted once, under the first rule it breaks in a fixed order:
 		eligibility, then evidence, then arithmetic. Bars sum to the totals above. Classes with fewer than
 		{S.min_display} decisions are grouped as “Other”. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
-		claims still inside the {S.params.claim_processing_days}-day processing window are not counted.
+		claims still inside the {S.params.claim_processing_days}-day processing window are not counted. Received dates are
+		business-day intake dates: a claim submitted on a weekend counts as received the next business day.
 	</p>
 </section>
 

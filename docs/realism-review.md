@@ -372,3 +372,235 @@ Each finding was fixed in the generator, the rule text or the validator, or kept
 | F16 | Fixed. A share of cooling installs is pulled into the spring window, including from early May. | — |
 | F17 | Fixed. #10 and inactive-contractor denials use installs within 30 days after termination or 60 days before enrollment. | — |
 | Auditor items | B1 is now testable (distributor enrollment dates). B6.3 is the rounding clause. A6.1 says serials are opaque. Near-duplicates (re-keyed serials) are kept out as taste. | — |
+
+---
+
+# Re-review (793e9d1)
+
+**Verdict: PASS WITH FINDINGS.** The 17 original findings are fixed, and I checked each one in the
+data rather than taking the response table's word for it. The universe now reads like a real
+program year:
+
+- The channel reconciles.
+- The calendar is ragged.
+- Sell-in has a heating season.
+- Defects show up the way real ones do.
+- A fresh 20-claim sample reads real on content, 20 of 20.
+
+One record still cannot be reproduced from the rulebook text (R1), which is a one-line fix. The
+other findings are new tells that the fixes introduced, and none of them is a blocker.
+
+Same constraints as the first review: read-only except this file, Python `-I` and stdlib only.
+Rulebook: v1.1.
+
+## Hand re-derivation against rulebook v1.1
+
+I wrote the re-derivation from the rule text alone, including the new clauses:
+
+- A5.3: document deadline; a late document counts as missing except under A8.
+- A9.3 and C0: as-of date 2026-02-27, with a 35-day processing window.
+- B1: enrolled for the full quarter.
+- B6.3: round down to the cent, B4 and B5 separately.
+
+| Family | Records off | Over | Under | Agreement with `results.json` |
+|---|---|---|---|---|
+| Tier | 60 | $243,551.71 | $151,075.65 | Exact. 0 disagreements. |
+| SPIFF | 1,313 | $89,270.00 | $35,415.00 | 1 disagreement: **A013347** (R1). The validator reports 1,314 records, $89,270.00 over and $35,575.00 under. |
+
+The F7 inference is gone, because A5.3 now states the deadline. B6.3 matches the validator's
+flooring. B1 can be computed, but no distributor ever breaks it: the latest enrollment is
+2024-09-20.
+
+## Dispositions checked against the data
+
+| # | Builder says | Data says | Status |
+|---|---|---|---|
+| F1 | No receipts before 2025 | 0 receipts before 2025-01-02. The 42 paid 2024 installs are all Dec 2024, received Jan–Feb 2025. | Fixed |
+| F2 | 0 pairs claimed > bought | 0 by **installed** model and unique serial. The 18 pairs over by *claim* model are all #7+8 claims naming the entry model, which is correct by design. Volume vs claims r = 0.62 (was −0.07). | Fixed |
+| F3 | Furnaces peak in Q4 | Furnace sell-in by quarter: 20.7k / 12.3k / 20.3k / 28.4k units. Furnace installs: 489 / 396 / 425 / 1,140. | Fixed |
+| F4 | #12 within 3% | All 13 within 0.47–2.56% of a threshold | Fixed |
+| F5 | Direction matches | Every class's primary dollars match the rulebook's direction column. #14 is now over only. | Fixed |
+| F6 | 46 in process, 79 stale | **47 in process and 78 stale** by the rule text. The difference is A013347 (R1). | Fixed, except for R1 |
+| F7 | A5.3 added | Reproduces | Fixed |
+| F8 | A5.2 mismatches occur | invoice_model ≠ claim_model on 317 rows. All 90 #4 claims name the ordered model. | Fixed |
+| F9 | Entry-level only | All #4 claims ordered AC15, HP16 or FG96 | Fixed |
+| F10 | 245 installs on the 31st; 0 weekend invoices | Confirmed. Saturday installs are 1,019 and Sunday 260, against about 2,400 on weekdays. 0 receipts on holidays. | Fixed |
+| F11 | 174–320 prices per SKU | Confirmed. Statement volumes are ragged to the cent, 1–20 invoices per SKU per month, and distributor-months carry 7–13 SKUs. | Fixed |
+| F12 | Docs trail | About 14% of invoice documents trail the claim. Registration lag tails out past 19 days. There are 99 missing invoices and 94 missing registrations. | Fixed (see R6) |
+| F13 | No pile on the 15th | Out-of-window installs fall on random days | Fixed |
+| F14 | Town suffixes removed | No real place names remain, but the replacement names are malformed (R2) | Fixed, but it introduced R2 |
+| F15 | Persistent growth | Q1 vs Q2 growth r = 0.71 (was −0.02) | Fixed |
+| F16 | Spring pull | Mar 1,083 vs Feb 455; Apr 1,449 > May 1,249 | Fixed |
+| F17 | 30/60-day windows | 384 inactive-date claims across 51 contractors. The maximum per contractor is 20 (was 27). | Fixed |
+
+## Findings — breaks the rulebook
+
+### R1 (Medium): day 35 is in process by the rule text, but the data flags it
+- **What:** A013347 was received on 2026-01-23, exactly 35 days before the as-of date, and it is
+  pending.
+  - A9.3 counts a claim as unprocessed only when it is pending "**more than** 35 days after
+    receipt".
+  - C0 says a claim received "**within** the previous 35 days" is in process.
+
+  By both, this claim is in process and must not be flagged. The data flags it anyway.
+- **Evidence:** `results.json` flags A013347 as #11, $160.00 underpaid. The cause is in two scripts:
+  - `validate.py:155` uses `(AS_OF - recv).days < PROCESSING`.
+  - The generator's `DECIDED_BY = AS_OF - 35` is inclusive, so it planted #11 on the boundary
+    day.
+- **Why it breaks:** this is the only flag in 1,374 that cannot be reproduced by hand from the
+  rulebook.
+- **Smallest fix:** choose one side and make all three places agree.
+  - Either change the text to "35 days or more" and "fewer than 35 days".
+  - Or use `<=` in the validator and seed defects only on `received_date < DECIDED_BY` in the
+    generator.
+
+## Findings — new tells introduced by the fixes
+
+### R2 (Medium tell): invented names are visibly machine-joined
+- **What:** the new prefixes join to the suffixes without any phonetic check.
+- **Evidence:**
+  - 10 names have a tripled letter: Corrrick Climate Services, Corrridge Heating & Air,
+    Merrrick HVAC Supply, Yarrrick Climate Services, Odddale HVAC Supply, and others.
+  - Joins double a letter: Calvvale, Garvvale, Holvvale, Sorvvale.
+  - 15 names start "Linq-" (Linqholt, Linqdale).
+  - Clusters such as Dunrmere, Dunrridge and Thravholt read unnatural.
+  - Three of the 20 sampled claims carry one of these names (Dunrmere ×2, Holvvale).
+- **Why it matters:** on the claims page, a reviewer sees "Corrrick" before they see any number.
+  This replaces the F14 risk (real towns) with a synthetic tell.
+- **Smallest fix:**
+  - In `place()`, reject any name with a tripled letter, a doubled letter at the join, or a `q`
+    not followed by `u`.
+  - Drop the "Linq" and "Dunr" prefixes.
+
+  A hand-screened list of about 60 invented stems would be cleaner still. Keep the pre-launch
+  re-screen.
+
+### R3 (Medium): long-enrolled distributors with no 2024 volume
+- **What:** 12 distributors have no Table B3 baseline, so B5.2 bars them from the growth bonus.
+  All 12 have been enrolled since 2016–2023, yet they show zero 2024 purchases and normal 2025
+  purchases.
+- **Evidence:**
+  - D094 enrolled 2016-04-16 and D010 enrolled 2017-01-01; in total 12 such distributors.
+  - D016 (enrolled 2021-03-26) appears in the sample at $815,049 in Q1 with a blank baseline.
+- **Why it breaks:** B5.2 describes a distributor that is new in 2025. A distributor enrolled for
+  eight years with no 2024 business would be the first question in a rebate audit. The
+  `new_in_year` flag is drawn separately from the enrollment date.
+- **Smallest fix:** give `new_in_year` distributors an enrollment date of 2024-10-01 to 2024-12-31.
+  B1 still passes for 2025 Q1. Alternatively, draw `new_in_year` from the enrollment date.
+
+### R4 (Low-Medium tell): no defects at year-end
+- **What:** two generator constraints empty the year-end of defects:
+  - Defects are seeded only on claims received on or before 2026-01-23.
+  - #6 requires install + 106 days ≤ 2026-01-23.
+- **Evidence:**
+  - None of the 240 #6 claims has an install after 2025-10-09, against 3,057 Q4 installs and the
+    furnace peak.
+  - The 62 claims received after 2026-01-23 that were already decided carry 0 defects.
+  - The by-month #6 counts fall from 39 in July to 8 in October, then to 0.
+- **Why it matters:** late filing clusters at year-end, around holiday backlogs and the heating
+  rush. A defect-rate-by-month chart, which a program view invites, shows a cliff.
+- **Smallest fix:**
+  - For #6, draw the late margin as 1 to `min(40, (DECIDED_BY - install).days - 60)`, so Q4
+    installs qualify.
+  - Allow over-class defects on claims already decided inside the final window. Only *pending*
+    claims there are exempt.
+
+### R5 (Low, page copy): the multi-defect count is now mostly single acts
+- **What:** multi-defect records went from 27 to 232. Of these, 212 are the forced pairs
+  7+8 (124) and 4+8 (88).
+- **Evidence:** #8 is present on 308 claims and primary on 88.
+- **Why it matters:** the pairs are correct under A5.2, because a rain check always also
+  mismatches the invoice. But the page pins "multi-defect count at full size", and a reader will
+  take 232 to mean 232 independent double failures.
+- **Smallest fix:** no data change. Add one line on the page: "Rain-check and model-swap claims
+  always also break A5.2."
+
+### R6 (Low tell): clamps leave pile-ups on the deadline
+- **What:** documents are clamped to the deadline instead of re-drawn.
+- **Evidence:**
+  - 47 invoice documents and 19 registrations land exactly on day 60, the deadline, because of
+    `min(..., due)`.
+  - 10 invoice documents fall on weekends while every other business date is a weekday, because
+    `due` itself can be a weekend.
+- **Smallest fix:** re-draw instead of clamping, and roll back to the prior business day.
+
+### R7 (Low, taste): Monday intake is 2.5× the other weekdays
+- **What:** Monday receipts are 5,545, against 1,804–2,216 on Tuesday to Friday.
+- **Why it's acceptable:** weekend portal submissions roll to Monday. That is a defensible intake
+  log, provided the page says that received dates are business-day intake dates.
+- **Fix:** none needed. One line of documentation is enough.
+
+## Not changed and accepted
+- B1 is computable but never broken, because every distributor enrolled by 2024-09-20. This is
+  fine as a demo path, and the page should not list B1 as a class.
+- The overpaid-dollar bound is now 2.54% against the 10–15% bound. It is disclosed and not
+  re-tuned, and I do not re-litigate it.
+- **36 distributors with no enrolled contractors.** Plausible, since not every distributor's
+  installer base is enrolled.
+- **#12 records just below a threshold, paid the higher tier.** 11 of 13 sit just below a
+  threshold and were paid the tier above it. That reads as a basis or comparison slip at the
+  boundary. Accepted.
+
+## Fresh sample — 20 claims
+
+**Method:** `random.Random(20261017)`. I drew 8 clean paid, 4 correctly denied and 8 planted
+claims, then sorted them by claim_id.
+
+| Claim | Kind | Reads real? | Note |
+|---|---|---|---|
+| A000707 | clean | Yes | HP20V installed Feb 5. The invoice document arrived with the claim. |
+| A001744 | #11 pending | Yes | FG98M received Apr 7 and still pending at the as-of date. A lost claim. |
+| A002557 | clean | Yes | Spring HP20V paid $260. The registration trails the claim by 2 days. Name: "Dunrmere" (R2). |
+| A003766 | clean | Yes | — |
+| A003817 | #9 | Yes | Installed May 7 and paid the spring rate ($260 vs $175). A believable boundary slip. |
+| A005713 | clean | Yes | — |
+| A006670 | correct deny | Yes | Invoice missing, reason recorded. |
+| A008564 | #18 | Yes | $139 of $175 with no rule basis. |
+| A008954 | clean | Yes | — |
+| A009876 | clean | Yes | Invoice document arrived 6 days after the claim, inside the deadline. |
+| A010177 | #6 | Yes | 92 days late and paid. |
+| A010679 | clean | Yes | — |
+| A010744 | #6 | Yes | 65 days late and paid. |
+| A010815 | clean | Yes | Contractor enrolled Jun 2025, install in Oct. |
+| A010835 | correct deny | Yes | 137 days late. Name: "Holvvale" (R2). |
+| A011467 | correct deny | Yes | 124 days late. "Dunrmere" again. |
+| A011477 | correct deny | Yes | Duplicate, reason recorded. |
+| A011602 | #6 | Yes | 68 days late and paid. |
+| A012036 | #11 denied | Yes | Denied as "Missing documentation" although both documents are on file. This is exactly how the defect looks in a real log. |
+| A012505 | #7+8 | Yes | Claim says GW-FG96, invoice shows GW-FG80. A textbook model swap. |
+
+**Result:** 20 of 20 read real on content, against 8 of 20 in the first review. 3 of the 20 carry
+a malformed name (R2).
+
+## Fresh sample — 10 distributor-quarters
+
+**Method:** the same RNG continued. I drew 6 clean and 4 planted statements.
+
+| Statement | Kind | Reads real? | Note |
+|---|---|---|---|
+| D016-Q1 | #16 | Yes, except the data behind it | Non-equipment lines counted. The blank baseline on a distributor enrolled since 2021 is R3. |
+| D047-Q3 | clean | Yes | $339,238.28 at Tier 2, just over the threshold. |
+| D051-Q2 | clean | Yes | — |
+| D053-Q1 | clean | Yes | $255,999.99 at Tier 1. |
+| D071-Q2 | clean | Yes | 121% of baseline, growth bonus paid. |
+| D088-Q4 | clean | Yes | Down 10% on 2024. |
+| D107-Q1 | #12 | Yes | $321,915 paid Tier 2. That is 0.95% under the threshold, a boundary slip. |
+| D117-Q3 | #17 | Yes | $408k paid Tier 1, carried over from Q2. |
+| D124-Q2 | #16 | Yes | Non-equipment lines counted, which inflates the basis on which growth is paid. |
+| D128-Q3 | clean | Yes | $4.26M at Tier 4, incremental. |
+
+**Result:** 10 of 10 read real. D016 is the only one with a data contradiction behind it (R3).
+
+---
+
+## Builder response to the re-review (2026-10-16)
+
+| # | Disposition |
+|---|---|
+| R1 | Fixed: the validator treats a claim as in process when (as-of − received) ≤ 35 days, and the generator seeds defects only on claims more than 35 days old. Rule text, validator and generator now agree. Exact recovery: 1,378 of 1,378. |
+| R2 | Fixed: `place()` rejects tripled letters, a doubled letter at the join, and q without u. The stems were replaced (612 valid combinations). 0 tripled letters remain. Names will be re-screened before launch. |
+| R3 | Fixed: distributors without a 2024 baseline now enrolled Oct–Dec 2024. |
+| R4 | Fixed: the #6 late margin fits before the decided-by date, and late filings now run through installs of 2025-11-18. The final 35-day window stays defect-free, because those claims are undecided. |
+| R5 | Page line added beside the multi-defect count. |
+| R6 | Fixed: trailing invoice dates are re-drawn rather than clamped, and the registration lag is re-drawn past the deadline. 21 invoices land on day 60 naturally (a claim filed on day 60 with its invoice attached). |
+| R7 | Page line added: received dates are business-day intake dates. |
