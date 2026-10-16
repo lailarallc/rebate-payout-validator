@@ -13,10 +13,12 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPTS = ["roll_parameters.py", "render_rules.py", "generate_universe.py", "validate.py", "bound_check.py"]
+SCRIPTS = ["roll_parameters.py", "render_rules.py", "generate_universe.py", "validate.py", "bound_check.py",
+           "build_site_data.py"]
 ARTIFACTS = sorted([*ROOT.glob("data/*.csv"), ROOT / "rules" / "parameters.json",
                     ROOT / "rules" / "galewick-program-rules.md", ROOT / "build" / "results.json",
-                    ROOT / "build" / "bound_check.json"])
+                    ROOT / "build" / "bound_check.json", ROOT / "web" / "src" / "lib" / "data" / "summary.json",
+                    ROOT / "web" / "src" / "lib" / "data" / "rules.html", ROOT / "web" / "static" / "data" / "flagged.json"])
 
 
 def run_pipeline():
@@ -109,6 +111,13 @@ class Pipeline(unittest.TestCase):
         with open(ROOT / "data" / "claims.csv", encoding="utf-8", newline="") as f:
             rows = list(csv.DictReader(f))
         self.assertTrue(all("2025-01-01" < r["received_date"] <= self.results["universe"]["as_of"] for r in rows))
+
+    def test_site_data_matches_validator(self):
+        s = json.loads((ROOT / "web" / "src" / "lib" / "data" / "summary.json").read_text(encoding="utf-8"))
+        self.assertEqual(s["verdict"], self.results["verdict"])
+        flagged = json.loads((ROOT / "web" / "static" / "data" / "flagged.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(flagged), self.results["verdict"]["flagged_records"])
+        self.assertEqual(sum(f["d"] for f in flagged if f["d"] > 0), self.results["verdict"]["over_cents"])
 
     def test_rulebook_has_no_unrendered_placeholder(self):
         self.assertNotIn("{{", (ROOT / "rules" / "galewick-program-rules.md").read_text(encoding="utf-8"))

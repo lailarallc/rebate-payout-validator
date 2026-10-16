@@ -1,0 +1,85 @@
+<h1 id="galewick-climate-systems-2025-channel-incentive-program-rules">Galewick Climate Systems — 2025 Channel Incentive Program Rules</h1>
+<p><strong>Version:</strong> 1.1 · <strong>Status:</strong> Published — parameters drawn by seed, not by hand · <strong>Program year:</strong> January 1 – December 31, 2025</p>
+<blockquote><p>Galewick Climate Systems is an invented company. These rules are invented for the Payout Math demonstration. No element mirrors any real program operator or client.</p></blockquote>
+<p>These rules are the truth Payout Math validates against. Every flag the tool raises cites a rule number below and can be reproduced by hand from this document and the claim record.</p>
+<p>Galewick runs two programs in 2025:</p>
+<ul><li><strong>Part A — Contractor Install Bonus.</strong> A per-unit bonus to enrolled contractors for each eligible unit they install.</li><li><strong>Part B — Distributor Volume Rebate.</strong> A quarterly tiered rebate to enrolled distributors on their purchases from Galewick.</li></ul>
+<hr>
+<h2 id="part-a-contractor-install-bonus">Part A — Contractor Install Bonus</h2>
+<h3 id="a1-who-can-earn">A1. Who can earn</h3>
+<p>A1.1 The claimant must be a contractor on the Galewick Certified Installer roster.</p>
+<p>A1.2 The contractor's enrollment date must be on or before the install date, and the contractor's status must be Active on the install date. Installs done before enrollment, or while status is Suspended or Terminated, earn nothing.</p>
+<h3 id="a2-what-earns-and-how-much">A2. What earns, and how much</h3>
+<p>A2.1 Only the models in <strong>Table A1</strong> earn a bonus. Models not listed earn nothing. Parts, accessories, and thermostats never earn.</p>
+<p>A2.2 The bonus is the Table A1 amount for the model installed, at the rate in effect on the <strong>install date</strong>: the Spring Rate from March 1 through April 30, 2025, and the Standard Rate on every other day of the program year. The Spring Rate is a cooling-season promotion: furnaces earn the same amount year-round.</p>
+<blockquote><p>Every number in these rules is a seeded draw from a stated range. None was chosen by hand. The draws and their ranges are in <code>rules/parameters.json</code>. The basis for each range is in <code>DECISIONS.md</code>.</p></blockquote>
+<p><strong>Table A1 — Eligible models and bonus per unit</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Description</th><th>Standard Rate</th><th>Spring Rate (Mar 1 – Apr 30)</th></tr></thead><tbody><tr><td>GW-AC15</td><td>Air conditioner, 15 SEER2</td><td>$50</td><td>$75</td></tr><tr><td>GW-HP16</td><td>Heat pump, 16 SEER2</td><td>$70</td><td>$105</td></tr><tr><td>GW-FG96</td><td>Gas furnace, 96% AFUE</td><td>$90</td><td>$90</td></tr><tr><td>GW-AC17</td><td>Air conditioner, 17 SEER2</td><td>$120</td><td>$180</td></tr><tr><td>GW-HP18</td><td>Heat pump, 18 SEER2</td><td>$135</td><td>$200</td></tr><tr><td>GW-FG98M</td><td>Gas furnace, 98% AFUE, modulating</td><td>$160</td><td>$160</td></tr><tr><td>GW-HP20V</td><td>Heat pump, variable speed</td><td>$175</td><td>$260</td></tr></tbody></table></div>
+<p><strong>Not eligible (common in the channel, listed for clarity):</strong> GW-AC13 (13.4 SEER2 air conditioner), GW-HP14 (14.3 SEER2 heat pump), GW-FG80 (80% AFUE furnace).</p>
+<h3 id="a3-when-the-install-must-happen">A3. When the install must happen</h3>
+<p>A3.1 The install date on the invoice must fall between January 1 and December 31, 2025, inclusive.</p>
+<h3 id="a4-when-the-claim-must-be-filed">A4. When the claim must be filed</h3>
+<p>A4.1 The claim must be received by Galewick within <strong>60 calendar days</strong> of the install date. Day 1 is the day after the install. A claim received on day 61 or later earns nothing, except as provided in A8.</p>
+<h3 id="a5-what-documentation-is-required">A5. What documentation is required</h3>
+<p>A5.1 Every claim needs both:</p>
+<ul><li>(a) the <strong>installation invoice</strong>, showing the install date, the model, and the serial number; and</li><li>(b) the <strong>Galewick warranty registration confirmation</strong> for that serial number.</li></ul>
+<p>A5.2 The model and serial on the invoice must match the model and serial on the claim.</p>
+<p>A5.3 Both documents must be received within the A4.1 deadline. A document received later is treated as missing, except as provided in A8. A claim filed late is judged under A4.1 alone: the documents filed with it are not separately late.</p>
+<p>A5.4 A claim missing either document, or whose invoice does not match the claim, earns nothing, except as provided in A8.</p>
+<h3 id="a6-one-bonus-per-unit">A6. One bonus per unit</h3>
+<p>A6.1 Each serial number earns one bonus, once, for the life of the program, regardless of which contractor files it. The first valid claim received for a serial number is the one that earns. Later claims on the same serial earn nothing. Serial numbers are opaque identifiers: they carry no manufacture date.</p>
+<p>A6.2 <strong>Manufacturing serial collisions.</strong> Galewick occasionally assigns the same serial number to two physical units. Known collisions are listed in <strong>Table A2</strong> with the model and the distributor each unit shipped to. A colliding serial identifies two different units. A claim on either unit earns on its own merits, and must not be denied as a duplicate of the other.</p>
+<h3 id="a7-substitutions">A7. Substitutions</h3>
+<p>A7.1 The bonus is paid on the model <strong>actually installed</strong>, as shown on the invoice. It is not paid on the model ordered, promoted, or originally quoted.</p>
+<p>A7.2 If a distributor ships a different model because the ordered model is out of stock, the installed model must itself appear in Table A1 to earn. If it does, it earns its own Table A1 amount, not the amount of the model ordered.</p>
+<h3 id="a8-reduced-payment-for-late-documentation">A8. Reduced payment for late documentation</h3>
+<p>A8.1 This is the only rule under which a claim may be paid less than its full Table A1 amount.</p>
+<p>A8.2 If a claim was <strong>filed on time</strong> (A4.1) and <strong>one</strong> required document (A5.1 a or b) was received after the 60-day deadline but no more than <strong>15 days</strong> after it, the claim earns <strong>25%</strong> of its Table A1 amount.</p>
+<p>A8.3 Any other partial payment has no basis in these rules.</p>
+<h3 id="a9-paying-earned-bonuses">A9. Paying earned bonuses</h3>
+<p>A9.1 Every claim that meets A1 through A7 earns its full Table A1 amount, or 25% under A8. Galewick owes that amount whether the claim was paid, denied, or left unprocessed.</p>
+<p>A9.2 Bonuses are paid by check or ACH to the enrolled contractor of record.</p>
+<p>A9.3 Galewick decides each claim within <strong>35 days</strong> of receipt. A claim still pending more than 35 days after receipt counts as unprocessed under A9.1.</p>
+<hr>
+<h2 id="part-b-distributor-volume-rebate">Part B — Distributor Volume Rebate</h2>
+<h3 id="b1-who-can-earn">B1. Who can earn</h3>
+<p>B1.1 The distributor must be enrolled in the Galewick Distributor Program for the full quarter.</p>
+<h3 id="b2-measurement-period">B2. Measurement period</h3>
+<p>B2.1 Each calendar quarter of 2025 is measured on its own. Q1 is Jan–Mar, Q2 is Apr–Jun, Q3 is Jul–Sep, and Q4 is Oct–Dec.</p>
+<h3 id="b3-qualifying-volume">B3. Qualifying volume</h3>
+<p>B3.1 Qualifying volume is the distributor's invoiced purchases from Galewick, dated in the quarter, of the <strong>equipment SKUs in Table B1</strong>,</p>
+<p>B3.2 <strong>minus</strong> credits for returns of Table B1 SKUs issued in the same quarter.</p>
+<p>B3.3 Parts, accessories, controls, freight, and any SKU not in Table B1 never count toward qualifying volume.</p>
+<p><strong>Table B1 — Rebate-eligible equipment SKUs</strong></p>
+<p>All Table A1 models, plus GW-AC13, GW-HP14, and GW-FG80. These count toward distributor volume even though they do not earn the contractor install bonus.</p>
+<h3 id="b4-tiers-and-rates">B4. Tiers and rates</h3>
+<p>B4.1 The tier is set by the quarter's qualifying volume, compared to the thresholds in Table B2. A distributor reaches a tier when qualifying volume is <strong>equal to or greater than</strong> the threshold.</p>
+<p>B4.2 The tier is recalculated every quarter. A tier reached in one quarter does not carry into the next.</p>
+<p><strong>Table B2 — Quarterly tiers</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Tier</th><th>Qualifying volume</th><th>Rate</th><th>How the rate applies</th></tr></thead><tbody><tr><td>1</td><td>under $325,000</td><td>0%</td><td>—</td></tr><tr><td>2</td><td>$325,000 – $1,049,999.99</td><td>1.75%</td><td>Retroactive: applies to all qualifying volume from the first dollar</td></tr><tr><td>3</td><td>$1,050,000 – $2,099,999.99</td><td>3.25%</td><td>Retroactive: applies to all qualifying volume from the first dollar</td></tr><tr><td>4</td><td>$2,100,000 and over</td><td>3.25% on the first $2,100,000, plus <strong>5.25%</strong> on volume above $2,100,000</td><td>Incremental above the Tier 4 threshold only</td></tr></tbody></table></div>
+<h3 id="b5-growth-bonus">B5. Growth bonus</h3>
+<p>B5.1 A distributor earns an additional <strong>0.75%</strong> on the quarter's qualifying volume if that volume is at least <strong>113%</strong> of its baseline.</p>
+<p>B5.2 The <strong>baseline</strong> is the distributor's qualifying volume for the <strong>same quarter of 2024</strong>, calculated under B3. Baselines are listed in Table B3. A distributor with no 2024 baseline cannot earn the growth bonus.</p>
+<h3 id="b6-payment">B6. Payment</h3>
+<p>B6.1 Rebate earned is the B4 amount plus any B5 amount.</p>
+<p>B6.2 Galewick owes the rebate earned for each quarter. It is paid within <strong>60 days</strong> after quarter end to the enrolled distributor of record.</p>
+<p>B6.3 Each amount under B4 and B5 is calculated separately and rounded down to the whole cent.</p>
+<hr>
+<h2 id="part-c-how-payout-math-applies-these-rules">Part C — How Payout Math applies these rules</h2>
+<p>C0. <strong>As-of date.</strong> Payout Math reads Galewick's records as they stood on <strong>February 27, 2026</strong>. A claim pending on that date and received within the previous 35 days is still in process (A9.3). It is neither paid nor owed yet, and it is not flagged.</p>
+<p>C1. <strong>Earned</strong> is the amount these rules produce for a claim or a distributor-quarter. <strong>Paid</strong> is the amount Galewick actually paid. Where paid exceeds earned, the difference is an <strong>overpayment</strong>. Where earned exceeds paid, the difference is an <strong>underpayment</strong>. The two are never netted against each other.</p>
+<p>C2. <strong>One primary defect per record.</strong> A record can break more than one rule. Its dollars are assigned to one primary defect, chosen in this fixed order:</p>
+<ol><li><strong>Eligibility:</strong> A1, A7, A2.1, B1, B3.3</li><li><strong>Evidence:</strong> A6, A3, A4, A5</li><li><strong>Math:</strong> A2.2, A8, A9, B3.2, B4, B5</li></ol>
+<p>Within a group, the first-listed rule wins. Other defects on the record are still shown as evidence.</p>
+<h3 id="defect-classes-and-the-rule-each-one-breaks">Defect classes and the rule each one breaks</h3>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Defect class</th><th>Rule</th><th>Direction</th><th>Reproduce by hand</th></tr></thead><tbody><tr><td>1</td><td>Duplicate serial, same contractor</td><td>A6.1</td><td>Over</td><td>Serial appears on an earlier paid claim from the same contractor</td></tr><tr><td>2</td><td>Duplicate serial, two contractors</td><td>A6.1</td><td>Over</td><td>Serial appears on an earlier paid claim from a different contractor</td></tr><tr><td>3</td><td>Factory serial collision denied as duplicate</td><td>A6.2</td><td>Under</td><td>Serial + model is in Table A2; claim denied as a duplicate</td></tr><tr><td>4</td><td>Rain-check substitute paid</td><td>A7.2</td><td>Over</td><td>Invoice model ≠ ordered model; invoice model not in Table A1</td></tr><tr><td>5</td><td>Install outside program year</td><td>A3.1</td><td>Over</td><td>Invoice install date before Jan 1 or after Dec 31, 2025</td></tr><tr><td>6</td><td>Filed late, paid anyway</td><td>A4.1</td><td>Over</td><td>Received date − install date &gt; 60 days, and A8 doesn't apply</td></tr><tr><td>7</td><td>Ineligible model</td><td>A2.1</td><td>Over</td><td>Invoice model not in Table A1 (no substitution involved)</td></tr><tr><td>8</td><td>Missing or mismatched documentation</td><td>A5</td><td>Over</td><td>Document absent, or invoice model/serial ≠ claim</td></tr><tr><td>9</td><td>Wrong bonus amount</td><td>A2.2</td><td>Over or under</td><td>Paid ≠ Table A1 amount at the install-date rate</td></tr><tr><td>10</td><td>Ineligible contractor</td><td>A1.2</td><td>Over</td><td>Install date before enrollment, or status not Active</td></tr><tr><td>11</td><td>Valid claim denied or unprocessed</td><td>A9.1</td><td>Under</td><td>Claim meets A1–A7; paid $0</td></tr><tr><td>12</td><td>Wrong tier</td><td>B4.1</td><td>Over or under</td><td>Tier implied by qualifying volume ≠ tier paid</td></tr><tr><td>13</td><td>Retroactive vs. incremental misapplied</td><td>B4 (Table B2)</td><td>Over or under</td><td>Tier 2–3 paid incrementally, or Tier 4 paid retroactively</td></tr><tr><td>14</td><td>Returns not netted</td><td>B3.2</td><td>Over</td><td>Rebate computed on purchases before return credits</td></tr><tr><td>15</td><td>Wrong growth baseline</td><td>B5.2</td><td>Over or under</td><td>Growth test run against a figure other than Table B3</td></tr><tr><td>16</td><td>Ineligible SKUs in volume</td><td>B3.3</td><td>Over</td><td>Non-Table B1 lines counted in qualifying volume</td></tr><tr><td>17</td><td>Earned tier paid at a lower tier</td><td>B4.2</td><td>Under</td><td>Prior-quarter tier carried forward after the distributor moved up</td></tr><tr><td>18</td><td>Partial payment with no rule basis</td><td>A8.3</td><td>Over or under</td><td>0 &lt; paid &lt; full amount, and A8.2 does not apply</td></tr></tbody></table></div>
+<p><strong>Note on #12 vs. #17:</strong> #12 is a tier set from the wrong volume figure or the wrong threshold comparison. #17 is a tier never recalculated: the prior quarter's lower tier was reused.</p>
+<p><strong>Note on #4 vs. #7:</strong> A7 is listed before A2.1, so an ineligible substitute is classed as #4, not #7. #7 is for an ineligible model installed as ordered.</p>
+<p><strong>Note on #9 vs. #18:</strong> #9 is a payment equal to some <em>other</em> Table A1 amount: the wrong model's rate, or the wrong period's rate. #18 is a payment between $0 and the full amount that matches no Table A1 amount and does not qualify under A8.2.</p>
+<hr>
+<h2 id="tables-to-be-generated-with-the-universe">Tables to be generated with the universe</h2>
+<ul><li><strong>Table A2:</strong> manufacturing serial collisions (serial, model, ship-to distributor, two rows per serial).</li><li><strong>Table B3:</strong> 2024 same-quarter baselines per distributor.</li></ul>
+<p>These are data, published alongside the rules. They are generated seed-locked with the universe.</p>
+<hr>
+<h2 id="changelog">Changelog</h2>
+<ul><li><strong>1.1 (2026-10-16):</strong> clarifications from the independent realism review: document deadline (A5.3), processing window (A9.3), opaque serials (A6.1), payment window and rounding (B6.2-B6.3), as-of date (C0). Two new parameters drawn from a separate seeded stream; every 1.0 value unchanged.</li><li><strong>1.0 (2026-10-16):</strong> every program parameter re-drawn as a seeded draw from research-plausible ranges (distance by construction). Rules text unchanged from 0.1-draft.</li><li><strong>0.1-draft (2026-10-15):</strong> first draft; hand-drafted values, all since replaced.</li></ul>

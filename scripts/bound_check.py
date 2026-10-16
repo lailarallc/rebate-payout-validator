@@ -19,13 +19,13 @@ BOUNDS = [
         "id": "spiff_claim_share",
         "what": "Share of paid install-bonus claims carrying a defect",
         "low_bp": 600, "high_bp": 1500,
-        "source": "ProfitOptics 2026: 6-15% of claims fail basic validation (vendor)",
+        "source": "ProfitOptics, a rebate-audit vendor, in 2026",
     },
     {
         "id": "overpaid_dollar_share",
         "what": "Overpaid dollars as a share of all dollars approved for payout",
         "low_bp": 1000, "high_bp": 1500,
-        "source": "Zyme/Forrester 2013: OEMs overpay incentives 10-15% (vendor PR, second-hand)",
+        "source": "a 2013 Zyme press release quoting Forrester on high-tech manufacturers",
     },
 ]
 
