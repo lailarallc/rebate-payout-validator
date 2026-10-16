@@ -36,3 +36,13 @@
   - **Not drawn:** model codes (invented) and their efficiency labels. The ineligible SEER2/AFUE levels sit at generic federal-minimum levels. These are product attributes, not program parameters.
   - **Do not:** hand-edit `rules/galewick-program-rules.md` or `rules/parameters.json`. Change a range here first, then re-run both scripts, and log the change.
 - **2026-10-16 — The 20-claim owner eyeball gate is replaced by an independent adversarial realism review.** A fresh session with no stake in the build reviews the generated universe against the pinned criteria, following the fleet's blind-review pattern. Its findings are recorded in-repo. Owner sampling is optional, not required.
+- **2026-10-16 — Realism review FAIL answered in the generator and the rule text; rates and v1.0 parameters untouched.** The independent review (`docs/realism-review.md`, 17 findings) found the payout math exact, but the data showed synthetic tells. Every finding is addressed or explicitly kept (response table appended to the review).
+  - **New parameters in rulebook v1.1.** They come from a separate seeded stream, so every v1.0 draw is unchanged:
+    - claim processing window: 21–42 days (7), STRUCTURAL, drawn 35;
+    - rebate payment window: 30–60 days (15), STRUCTURAL, drawn 60.
+  - **As-of date** of the extract is 2026-02-27. That is a data choice, not a program parameter. It is close enough to year-end that December's heating-season claims form a real in-process backlog.
+  - **New DIRECTION labels:**
+    - Furnace sell-in seasonality is Q1 1.0 / Q2 0.6 / Q3 1.0 / Q4 1.4, with distributors stocking ahead of winter.
+    - Install weekday weights are Sat 0.4, Sun 0.1, holidays 0.1, because residential installs are mostly weekday work.
+    - A mid-year list-price increase of +4% applies from Jul 1. It is STRUCTURAL.
+  - **Do not:** seed a defect that the channel structure makes impossible. Contractor claims never exceed their distributor's sell-in, and a test enforces this.

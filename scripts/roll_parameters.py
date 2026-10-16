@@ -89,6 +89,20 @@ RANGES = {
     },
 }
 
+# Added in rulebook v1.1 (realism review F6 / B6). Drawn from a separate seeded stream so
+# the v1.0 draws above are unchanged.
+SEED_STRING_V11 = "galewick-climate-systems/program-year-2025/parameters/v1.1"
+RANGES_V11 = {
+    "claim_processing_days": {
+        "low": 21, "high": 42, "step": 7,
+        "basis": "STRUCTURAL",
+    },
+    "rebate_payment_days": {
+        "low": 30, "high": 60, "step": 15,
+        "basis": "STRUCTURAL",
+    },
+}
+
 # Models ordered by efficiency within each family. Rank 0 = lowest eligible.
 # Model codes and efficiency labels are invented. Furnaces get no spring rate
 # (spring promotion is a cooling-season promotion).
@@ -145,6 +159,9 @@ def main():
     r3 = r2 + drawn["tier3_step_pct"]
     r4 = r3 + drawn["tier4_step_pct"]
 
+    rng11 = random.Random(int(hashlib.sha256(SEED_STRING_V11.encode()).hexdigest(), 16) % (2**32))
+    drawn11 = {name: draw(rng11, spec) for name, spec in RANGES_V11.items()}
+
     start = int(drawn["spring_start_month"])
     end = start + int(drawn["spring_length_months"]) - 1
 
@@ -168,8 +185,11 @@ def main():
         ],
         "growth_threshold_pct": int(drawn["growth_threshold_pct"]),
         "growth_bonus_pct": drawn["growth_bonus_pct"],
-        "ranges": RANGES,
-        "draws": drawn,
+        "claim_processing_days": int(drawn11["claim_processing_days"]),
+        "rebate_payment_days": int(drawn11["rebate_payment_days"]),
+        "ranges": {**RANGES, **RANGES_V11},
+        "draws": {**drawn, **drawn11},
+        "seed_string_v11": SEED_STRING_V11,
     }
     OUT.write_text(json.dumps(params, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({k: v for k, v in params.items() if k not in ("ranges", "draws")}, indent=2))

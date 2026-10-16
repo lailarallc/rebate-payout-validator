@@ -14,9 +14,13 @@ TEMPLATE = ROOT / "rules" / "galewick-program-rules.template.md"
 PARAMS = ROOT / "rules" / "parameters.json"
 OUT = ROOT / "rules" / "galewick-program-rules.md"
 
-VERSION = "1.0"
+VERSION = "1.1"
 STATUS = "Published — parameters drawn by seed, not by hand"
-CHANGELOG = """- **1.0 (2026-10-16):** every program parameter re-drawn as a seeded draw from
+CHANGELOG = """- **1.1 (2026-10-16):** clarifications from the independent realism review: document
+  deadline (A5.3), processing window (A9.3), opaque serials (A6.1), payment window and rounding
+  (B6.2-B6.3), as-of date (C0). Two new parameters drawn from a separate seeded stream; every
+  1.0 value unchanged.
+- **1.0 (2026-10-16):** every program parameter re-drawn as a seeded draw from
   research-plausible ranges (distance by construction). Rules text unchanged from 0.1-draft.
 - **0.1-draft (2026-10-15):** first draft; hand-drafted values, all since replaced."""
 
@@ -64,6 +68,8 @@ def render(params):
         "growth_bonus": pct(params["growth_bonus_pct"]),
         "growth_threshold": str(params["growth_threshold_pct"]),
         "changelog": CHANGELOG,
+        "processing": str(params["claim_processing_days"]),
+        "payment_days": str(params["rebate_payment_days"]),
     }
     text = TEMPLATE.read_text(encoding="utf-8")
     for key, val in values.items():

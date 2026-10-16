@@ -1,6 +1,6 @@
 # Galewick Climate Systems — 2025 Channel Incentive Program Rules
 
-**Version:** 1.0 · **Status:** Published — parameters drawn by seed, not by hand · **Program year:** January 1 – December 31, 2025
+**Version:** 1.1 · **Status:** Published — parameters drawn by seed, not by hand · **Program year:** January 1 – December 31, 2025
 
 > Galewick Climate Systems is an invented company. These rules are invented for the Payout
 > Math demonstration. No element mirrors any real program operator or client.
@@ -77,14 +77,19 @@ A5.1 Every claim needs both:
 
 A5.2 The model and serial on the invoice must match the model and serial on the claim.
 
-A5.3 A claim missing either document, or whose invoice does not match the claim, earns
+A5.3 Both documents must be received within the A4.1 deadline. A document received later is
+treated as missing, except as provided in A8. A claim filed late is judged under A4.1 alone:
+the documents filed with it are not separately late.
+
+A5.4 A claim missing either document, or whose invoice does not match the claim, earns
 nothing, except as provided in A8.
 
 ### A6. One bonus per unit
 
 A6.1 Each serial number earns one bonus, once, for the life of the program, regardless of which
 contractor files it. The first valid claim received for a serial number is the one that earns.
-Later claims on the same serial earn nothing.
+Later claims on the same serial earn nothing. Serial numbers are opaque identifiers: they carry
+no manufacture date.
 
 A6.2 **Manufacturing serial collisions.** Galewick occasionally assigns the same serial number
 to two physical units. Known collisions are listed in **Table A2** with the model and the
@@ -116,6 +121,9 @@ A9.1 Every claim that meets A1 through A7 earns its full Table A1 amount, or 25%
 Galewick owes that amount whether the claim was paid, denied, or left unprocessed.
 
 A9.2 Bonuses are paid by check or ACH to the enrolled contractor of record.
+
+A9.3 Galewick decides each claim within **35 days** of receipt. A claim still pending
+more than 35 days after receipt counts as unprocessed under A9.1.
 
 ---
 
@@ -176,12 +184,18 @@ cannot earn the growth bonus.
 
 B6.1 Rebate earned is the B4 amount plus any B5 amount.
 
-B6.2 Galewick owes the rebate earned for each quarter. It is paid within 45 days after
+B6.2 Galewick owes the rebate earned for each quarter. It is paid within **60 days** after
 quarter end to the enrolled distributor of record.
+
+B6.3 Each amount under B4 and B5 is calculated separately and rounded down to the whole cent.
 
 ---
 
 ## Part C — How Payout Math applies these rules
+
+C0. **As-of date.** Payout Math reads Galewick's records as they stood on **February 27, 2026**.
+A claim pending on that date and received within the previous 35 days is still in
+process (A9.3). It is neither paid nor owed yet, and it is not flagged.
 
 C1. **Earned** is the amount these rules produce for a claim or a distributor-quarter.
 **Paid** is the amount Galewick actually paid. Where paid exceeds earned, the difference is
@@ -245,6 +259,10 @@ These are data, published alongside the rules. They are generated seed-locked wi
 
 ## Changelog
 
+- **1.1 (2026-10-16):** clarifications from the independent realism review: document
+  deadline (A5.3), processing window (A9.3), opaque serials (A6.1), payment window and rounding
+  (B6.2-B6.3), as-of date (C0). Two new parameters drawn from a separate seeded stream; every
+  1.0 value unchanged.
 - **1.0 (2026-10-16):** every program parameter re-drawn as a seeded draw from
   research-plausible ranges (distance by construction). Rules text unchanged from 0.1-draft.
 - **0.1-draft (2026-10-15):** first draft; hand-drafted values, all since replaced.

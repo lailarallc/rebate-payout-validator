@@ -81,6 +81,35 @@ class Pipeline(unittest.TestCase):
                     walk(y)
         walk(self.results)
 
+    def test_primary_class_direction_matches_rulebook(self):
+        over_only = {1, 2, 4, 5, 6, 7, 8, 10, 14, 16}
+        under_only = {3, 11, 17}
+        for f in self.results["flagged"]:
+            if f["primary"] in over_only:
+                self.assertGreater(f["delta_cents"], 0, f["record_id"])
+            if f["primary"] in under_only:
+                self.assertLess(f["delta_cents"], 0, f["record_id"])
+
+    def test_distributor_sell_in_covers_contractor_claims(self):
+        bought = {}
+        with open(ROOT / "data" / "purchase_lines.csv", encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                k = (r["distributor_id"], r["sku"])
+                bought[k] = bought.get(k, 0) + int(r["units"])
+        claimed = {}
+        with open(ROOT / "data" / "claims.csv", encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if r["invoice_model"]:
+                    k = (r["distributor_id"], r["invoice_model"])
+                    claimed[k] = claimed.get(k, 0) + 1
+        over = {k: (v, bought.get(k, 0)) for k, v in claimed.items() if v > bought.get(k, 0)}
+        self.assertEqual(over, {})
+
+    def test_no_claim_received_outside_program_operation(self):
+        with open(ROOT / "data" / "claims.csv", encoding="utf-8", newline="") as f:
+            rows = list(csv.DictReader(f))
+        self.assertTrue(all("2025-01-01" < r["received_date"] <= self.results["universe"]["as_of"] for r in rows))
+
     def test_rulebook_has_no_unrendered_placeholder(self):
         self.assertNotIn("{{", (ROOT / "rules" / "galewick-program-rules.md").read_text(encoding="utf-8"))
 
