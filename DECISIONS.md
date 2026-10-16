@@ -1,3 +1,4 @@
 # DECISIONS
 
 - **2026-10-16 — History rewritten before first publication, never after.** An early commit named the owner's employer in the PLAN.md guardrail. The repo was a day old, private, unpinned, and had no collaborators, so history was rewritten and force-pushed. Old SHAs are deliberately not recorded here, because GitHub keeps orphaned commits reachable by SHA until it garbage-collects them. Do not: rewrite history once the repo is public or has any collaborator, fork, or pin. After publication, a fix goes in a new commit.
+- **2026-10-16 — One orphaned commit accepted. No purge, no deletion, no recreation.** GitHub still serves the pre-rewrite commit to anyone who has its SHA. The owner accepts this because the content isn't sensitive: the owner's employment is public, and the line was a guardrail, not a disclosure. It also can't be reached without a SHA that is recorded nowhere. Deleting and recreating the repo was considered and dropped.
