@@ -142,7 +142,7 @@
 			<a href="/rules">published program rules</a>. {count(v.flagged_records)} payout decisions were wrong:
 			{count(fam.spiff.flagged_records)} on install-bonus claims and {count(fam.tier.flagged_records)} on rebate
 			statements. Overpayments and underpayments are counted separately and never netted — a contractor
-			owed $90 is not repaid by another contractor's $90 overpayment.
+			who was underpaid is not made whole by another contractor's overpayment.
 		</p>
 	</div>
 
@@ -182,7 +182,7 @@
 	</div>
 	<p class="footnote">
 		A decision that breaks several rules is counted once, under the first rule it breaks in a fixed order:
-		eligibility, then evidence, then arithmetic. Bars sum to the totals above. Classes with fewer than
+		eligibility, then evidence, then arithmetic. Bars sum to the totals above. Rules with fewer than
 		{S.min_display} decisions are grouped as “Other”. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
 		claims still inside the {S.params.claim_processing_days}-day processing window are not counted. Received dates are
 		business-day intake dates: a claim submitted on a weekend counts as received the next business day.
