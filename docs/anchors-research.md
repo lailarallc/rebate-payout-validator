@@ -109,3 +109,24 @@ Research gives direction, not the rate itself.
 
 **Bound check:** dollar-share bound (10–15% overpayment, vendor) checked AFTER generation.
 No re-tuning if the verdict is undramatic. The verdict lands where it lands.
+
+---
+
+# Bound check — RESULT (2026-10-16, first generation, not re-tuned)
+
+`scripts/bound_check.py` → `build/bound_check.json`.
+
+| Bound | Measured | Cited range | Result |
+|---|---|---|---|
+| Paid install-bonus claims carrying a defect | 11.05% (1,306 of 11,818) | 6–15% (ProfitOptics, vendor) | **PASS** |
+| Overpaid $ as share of all $ approved | 1.90% ($252,005 of $13,241,081) | 10–15% (Zyme/Forrester 2013, vendor PR) | **FAIL** |
+
+**Why the dollar bound fails, stated plainly:** the pinned per-record rates (C 2.0 / O 0.75 / R 0.2)
+put about 2–11% of *records* in defect. Distributor rebates are 91% of approved dollars, but only 60 of
+640 distributor-quarters carry a defect, and a defect there moves a fraction of the rebate, not all of
+it. A per-record frequency mapping cannot also produce a 10–15% *dollar* overpayment share unless
+defects are concentrated in the largest payments. No published source supports that concentration.
+
+**Not re-tuned** (pinned rule: no re-tuning if the verdict is undramatic). The failing bound is
+disclosed, not hidden. The cited 10–15% is a 2013 vendor press-release figure for high-tech OEMs,
+quoted second-hand. It is the weakest anchor in the file.
