@@ -356,7 +356,8 @@
 			Galewick Climate Systems is an invented HVAC manufacturer. Its {count(S.universe.claims)} claims and
 			{count(S.universe.statements)} rebate statements are synthetic and generated from a fixed seed. The kinds of
 			error come from nineteen years of incentive-program operations. How often each one occurs follows a stated
-			scale, because no published source breaks claim errors down by type. Every rule value in the
+			scale, because no published source breaks claim errors down by type. Each kind of error is seeded at
+			exactly its rate times the number of claims or rebate statements, so the counts repeat by design. Every rule value in the
 			<a href="/rules">rulebook</a> is a seeded draw from a range with a stated basis, not a number anyone chose.
 		</p>
 		<p class="body">

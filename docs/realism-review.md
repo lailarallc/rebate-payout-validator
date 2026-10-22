@@ -604,3 +604,214 @@ a malformed name (R2).
 | R5 | Page line added beside the multi-defect count. |
 | R6 | Fixed: trailing invoice dates are re-drawn rather than clamped, and the registration lag is re-drawn past the deadline. 21 invoices land on day 60 naturally (a claim filed on day 60 with its invoice attached). |
 | R7 | Page line added: received dates are business-day intake dates. |
+
+---
+
+# Third review (46ec07a)
+
+**Verdict: PASS WITH FINDINGS.** The resize broke nothing in the rulebook. The hand re-derivation
+matches `results.json` on every record in both families, and the R1–R7 fixes survived. The new
+findings are all tells that come from the smaller scale:
+
+- distributor sell-in now visibly follows the claims;
+- a long tail of micro-distributors earns nothing;
+- the wrong-tier (#12) statements form a perfect wall at the thresholds;
+- defect counts land on exact rate × base values.
+
+None of them breaks a pinned criterion. T1–T3 are worth fixing before launch. Each fix stays
+inside the approved shape (95 / 2,500 / 60 × 4) and moves no rate.
+
+Constraints as before: read-only except this file, Python `-I` and stdlib only. Rulebook v1.1, with
+thresholds T2 $48,750 / T3 $157,500 / T4 $315,000.
+
+## Hand re-derivation against rulebook v1.1
+
+| Family | Records off | Over | Under | Agreement with `results.json` |
+|---|---|---|---|---|
+| SPIFF | 279 | $18,615.00 | $6,875.00 | Exact. 0 disagreements. 10 claims in process, none flagged. |
+| Tier | 24 | $3,993.54 | $13,210.21 | Exact. 0 disagreements. |
+
+The totals tie to the verdict: $22,608.54 over and $20,085.21 under, against $819,579.79
+approved. All 18 classes are present.
+
+## R1–R7 after the resize
+
+| # | Check | Result |
+|---|---|---|
+| R1 | Day-35 boundary | The validator uses `<=`. No pending claim aged 35 days or less is flagged. My independent result matches exactly. **Survived.** |
+| R2 | Malformed names | 0 tripled letters, 0 doubled joins, no "Linq". The new stems (Jaspcrest, Delmcombe, Alvancombe, Roskhurst) read as names. **Survived.** |
+| R3 | Baseline vs enrollment | All 5 distributors without a baseline enrolled 2024-10-22 to 2024-12-30. **Survived.** One of them is a T1 issue. |
+| R4 | Year-end defects | #6 now runs through November installs. The final 35-day window has 12 decided claims with 0 defects; at the 11% rate, 1.3 would be expected, so this is not a signal at this size. **Survived.** |
+| R5 | Multi-defect page line | Present at `web/src/routes/+page.svelte:156`. 44 multi-defect records: 25 are 7+8 and 19 are 4+8. **Survived.** |
+| R6 | Deadline pile-ups | 6 invoice documents on day 60, 0 on weekends. **Survived.** |
+| R7 | Monday intake line | Present at `web/src/routes/+page.svelte:188`. **Survived.** |
+
+## Findings — new tells from the smaller scale
+
+### T1 (Medium): distributor sell-in is visibly built from the claims
+- **What:** the distributor floor (sell-in ≥ 1.3–2.5× claimed units) now binds almost everywhere,
+  because base volume was cut ×0.05. Eligible-model sell-in has become a fixed multiple of claims.
+- **Evidence:**
+  - Distributor equipment dollars and claim count correlate at **r = 0.97**. After F2 the figure
+    was 0.62; real channels are positive but noisy.
+  - Purchased ÷ claimed units per distributor × eligible model (n = 149 pairs with 3+ claims):
+    min 1.25, p10 1.44, median 1.92, p90 2.43. That is the floor band itself.
+  - Enrolled contractors claim **49%** of all eligible units sold (2,570 of 5,230), although
+    there are only 1.6 enrolled contractors per distributor.
+  - D051 enrolled on 2024-12-30, has no 2024 baseline, and is the largest distributor in the
+    program: $2.14M in purchases, 8 of 95 contractors, 396 claims and $83,963 in rebates (15% of
+    all rebates). A distributor two days into the program would not carry the largest installer
+    base.
+- **Why it matters:** a sponsor who plots sell-in against claims sees a straight line. Real
+  distributors sell an eligible model to many contractors who are not enrolled, so claims are a
+  minority share of sell-in that varies a lot from one distributor to the next.
+- **Smallest fix:**
+  - Draw the floor multiplier as a lognormal (median about 3, sigma about 0.5, floor 1.3) instead
+    of uniform 1.3–2.5. This keeps sell-in near the approved $22M band if base volume is trimmed
+    to match.
+  - Draw `new_in_year` only among distributors below the median base.
+
+### T2 (Medium): a tail of micro-distributors that buy a unit a quarter and earn nothing
+- **What:** with base volume ×0.05, the lognormal tail produces enrolled distributors that barely
+  buy.
+- **Evidence:**
+  - 27 of 240 distributor-quarters are under $10,000, and 59 are under $20,000.
+  - D025-Q1 is a single GW-FG80 at $1,311.30; D025 buys 11 units all year, one per invoice.
+  - D042-Q4 is $8,034.63.
+  - 113 of 240 quarters (47%) sit in Tier 1 and earn $0. 23 of 60 distributors never leave
+    Tier 1, and 18 earn $0 rebate all year.
+- **Why it matters:** a tiered rebate program enrolls stocking distributors. A member that buys
+  one furnace a quarter is a dealer, and a program in which nearly 40% of distributors earn
+  nothing all year reads as padded membership, not as a small program.
+- **Smallest fix:** truncate the base-volume draw at about $25k a quarter, and re-draw below that.
+  The count stays at 60, but re-check total sell-in against the approved band. Tier 1 stays common, but it is no
+  longer populated by members who buy a single unit.
+
+### T3 (Medium): #12 is a perfect wall at the thresholds
+- **What:** "closest-first" seeding hands #12 to the statements nearest a threshold, so it takes
+  all of them.
+- **Evidence:** ranking all 240 statements by distance to the nearest threshold:
+
+  | Rank | Statement | Distance | Planted |
+  |---|---|---|---|
+  | 0 | D008-Q4 | 0.82% | #12 |
+  | 1 | D039-Q2 | 2.61% | #12 |
+  | 2 | D002-Q3 | 2.65% | #12 |
+  | 3 | D024-Q3 | 2.85% | #15 (excluded) |
+  | 4 | D060-Q2 | 3.15% | #12 |
+  | 5 | D053-Q1 | 3.46% | #12 |
+
+  The nearest clean statement sits at rank 6, 3.49% away.
+- **Why it matters:** an auditor sorting by distance to a threshold finds that every boundary
+  statement is wrong and none is right. Real boundary errors are common near a threshold, not
+  certain.
+- **Smallest fix:** sample the 5 cases from the nearest about 20 candidates, weighted by
+  closeness (for example weight = 1/rank), so clean statements stay interleaved.
+
+### T4 (Medium tell, design consequence): every defect count is exactly rate × base
+- **What:** `n_for()` turns each rate into an exact count, so the counts repeat.
+- **Evidence:**
+
+  | Count | Classes |
+  |---|---|
+  | 5 | #1, #2, #3, #12, #14, #16, #17 |
+  | 19 | #4, #5, #8, #9, #10, #18 |
+  | 50 | #6, #7, #11 |
+  | 2 | #13, #15 |
+
+  At 12,000 claims, 24/90/240 looked like data. At 2,500, a column of 5s and 19s looks set.
+  DECISIONS notes that the R classes have "exactly 5 each, so they clear the display floor".
+- **Why it matters:** a reader of the program view sees seven classes at exactly 5. The pinned
+  rule is a rate, not a count; that the counts are exact is an implementation choice.
+- **Smallest fix:** choose one.
+  - **(a)** Keep the counts and state them on the method page: "Each class is seeded at exactly
+    its rate × base; counts are by design, not observed."
+  - **(b)** Draw each count from a seeded binomial(base, rate). Accept that some R classes may
+    fall under 5 and group into "Other", as #13 and #15 already do.
+
+  (a) is one line and honest. (b) is more realistic.
+
+### T5 (Low tell): sell-in ships one unit at a time
+- **What:** distributor purchases look like special orders, not stock replenishment.
+- **Evidence:**
+  - Of 5,045 equipment lines, 2,617 are a single unit and 2,187 are two units (95%).
+  - 150 of 449 distributor × SKU pairs total 5 units or fewer for the whole year.
+- **Why it matters:** stocking distributors reorder in pallet or truckload multiples. Lines of
+  one to two units suit a drop-ship dealer.
+- **Smallest fix:** draw order quantities as 2–12 in steps of 2 (by pallet), with fewer invoices
+  per month for small distributors. Line count goes down and line size goes up, with the same
+  annual units.
+
+## Accepted at this scale (owner-sourced, not re-litigated)
+- **Program size reads like a real small manufacturer.** A $819,580 payout on $22.0M sell-in,
+  2,460 paid bonuses averaging $110, and 95 contractors filing a median of 19 claims each read
+  plausibly for a small manufacturer. The top contractor files 8.3% of claims and the top 10 file
+  40%, a believable skew for a small installer base.
+- **21 of 60 distributors have no enrolled contractor.** All 21 are small ($23k–$235k a year).
+  This is plausible on its own; it adds to T1 only through the 49% claim share.
+- **The overpaid-dollar bound is 2.75%.** It is disclosed and not re-tuned.
+- **#13 and #15 have 2 cases each and group into "Other".** This is disclosed.
+- **Tier defects now move less money than the install-bonus defects.** Tier over is $3,994 and
+  install-bonus over is $18,615. This follows from the scale, not from tuning.
+
+## Fresh sample — 20 claims
+
+**Method:** `random.Random(20261022)`. I drew 8 clean paid, 4 correctly denied and 8 planted
+claims, then sorted them by claim_id.
+
+| Claim | Kind | Reads real? | Note |
+|---|---|---|---|
+| A000028 | clean | Yes | HP20V, January install, filed in 14 days. |
+| A000138 | correct deny | Yes | Invoice missing; contractor enrolled 2024-12-18. |
+| A000289 | clean | Yes | Spring AC15 paid $75. The invoice document arrived 21 days after the claim, inside A5.3. |
+| A000455 | #11 denied | Yes | Denied "Received after deadline" although it was filed 13 days after install. |
+| A000514 | #18 | Yes | $43 of $75 with no rule basis. |
+| A000515 | correct deny | Yes | AC13, "Model not eligible". |
+| A000735 | #11 denied | Yes | Denied "Missing documentation" with both documents on file. |
+| A000887 | correct deny | Yes | HP14, blank reason. |
+| A000899 | clean | Yes | Registration arrived the day after the claim. |
+| A001041 | #9 | Yes | HP18 installed Jun 13 and paid the spring rate ($200 vs $135). |
+| A001125 | #8 | Yes | No invoice and paid anyway. |
+| A001184 | clean | Yes | 40-day lag. |
+| A001205 | clean | Yes | FG98M in June. Low season, legal. |
+| A001243 | clean | Yes | Filed by the 233-claim contractor C0023 at D051 (see T1). |
+| A001459 | clean | Yes | — |
+| A001640 | #11 pending | Yes | Pending since August. |
+| A001812 | clean | Yes | Invoice document trails the claim by 13 days. |
+| A002367 | #1 | Yes | C0023 re-filed its own serial. |
+| A002642 | #10 | Yes | Installed 13 days after the contractor's termination. |
+| A002804 | correct deny | Yes | 83 days late, blank reason. |
+
+**Result:** 20 of 20 read real.
+
+## Fresh sample — 10 distributor-quarters
+
+**Method:** the same RNG continued. I drew 6 clean and 4 planted statements.
+
+| Statement | Kind | Reads real? | Note |
+|---|---|---|---|
+| D001-Q2 | clean | Yes | $16,712 at Tier 1. Small, but a few units a month. |
+| D001-Q4 | #16 | Yes | Non-equipment lines counted. At Tier 1 the error only inflates the growth bonus ($219.59). A realistic small-dollar miss. |
+| D005-Q2 | #13 | Yes | Tier 2 paid incrementally: $1,552 instead of about $2,405. |
+| D010-Q2 | clean | Yes | — |
+| D012-Q2 | clean | Yes | Down 4% on 2024. |
+| D024-Q3 | #15 | Yes | Growth tested against the wrong baseline; it paid $376. |
+| D027-Q3 | clean | Yes | 119% of baseline, growth bonus paid. |
+| D039-Q2 | #12 | Yes alone | $306,791 paid Tier 4, 2.6% under the threshold. In the ranking, it is part of the T3 wall. |
+| D042-Q3 | clean | Barely | $19,303. A distributor buying a handful of units (T2). |
+| D042-Q4 | clean | **No** | $8,035 for a quarter, about three units. This is not a stocking distributor (T2). |
+
+**Result:** 9 of 10 read real. The failure (D042-Q4) and the weak one (D042-Q3) are both T2.
+
+---
+
+## Builder response to the third review (2026-10-22)
+
+| # | Disposition |
+|---|---|
+| T3 | Fixed: #12 is sampled from the 4n statements nearest a threshold, weighted 1/rank, so clean boundary statements stay interleaved. |
+| T4 | (a) adopted: the method section states that counts are exactly rate × base by design. |
+| T5 | Partly fixed: lines ship in pallet multiples (2–12) on 2–6 invoices a month. Small residual quantities still produce 1–2 unit lines (70% of lines, down from 95%). |
+| T1, T2 | **Held for the owner.** Both fixes raise distributor sell-in (a wider claim-floor multiplier; a truncated base-volume tail), which would push the total payout back toward or past the owner's $1M cap. The owner barred further shape changes, so these await an owner call. |
+
+After the fixes: $835,060 approved (in band), exact recovery 303/303, 12 tests pass.

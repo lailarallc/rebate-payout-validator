@@ -693,14 +693,15 @@ def generate_volume(rng, distributors, claimed_units):
             for mi in range(3):
                 month = 3 * (q - 1) + mi + 1
                 last = calendar.monthrange(YEAR, month)[1]
-                n_inv = rng.randint(3, 12)
+                n_inv = rng.randint(2, 6)
                 invoices = sorted(rand_business_day(rng, date(YEAR, month, 1), date(YEAR, month, last))
                                   for _ in range(n_inv))
                 for s in carried:
                     units = monthly[s][month - 1]
                     # spread the month's units over a few of the month's invoices
                     while units > 0:
-                        take = units if units <= 2 else rng.randint(1, max(1, units // 2))
+                        # stock replenishment in pallet multiples, not single units (T5)
+                        take = min(units, rng.choice([2, 4, 6, 8, 10, 12]))
                         when = rng.choice(invoices)
                         amt = take * unit_price(d, s, when)
                         lines.append([did, when, s, take, amt])
@@ -792,7 +793,15 @@ def generate_statements(rng, distributors, quarters):
     thresholds = [100 * t["threshold_usd"] for t in TIERS[1:]]
     n, done = n_for(TIER_TAGS[12], base), 0
     rel = lambda k: min(abs(stmts[k]["volume_basis_cents"] - th) / th for th in thresholds)  # noqa: E731
-    cands = sorted((k for k in keys if not stmts[k]["planted"]), key=lambda k: (rel(k), k))
+    near_pool = sorted((k for k in keys if not stmts[k]["planted"]), key=lambda k: (rel(k), k))[:4 * n]
+    # Weighted by closeness (1/rank) without replacement, so clean statements stay interleaved
+    # among the boundary cases (third review T3).
+    cands = []
+    pool = list(near_pool)
+    while pool:
+        k = rng.choices(pool, [1 / (near_pool.index(x) + 1) for x in pool])[0]
+        cands.append(k)
+        pool.remove(k)
     for k in cands:
         if done == n:
             break
