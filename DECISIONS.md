@@ -67,3 +67,9 @@
 
     Those figures cover instruments Galewick does not run. The rebate share is inside its cited band.
   - **Do not:** re-scale the universe to move the verdict. Sizes move only on an owner realism call, and rates never move.
+- **2026-10-22 — Pin deviation: #12 ("Wrong tier") seeding rule changed twice.**
+  - **Original rule (realism review F4):** seed #12 only on statements whose volume sits within 3% of a tier threshold, then flip the tier across it.
+  - **Deviation 1, forced by the owner-sourced resize:** at 240 statements, only 3 sat inside the 3% window, and the pinned rate needs 5 cases (C 2.0% × 240). The rule became "closest-to-threshold first".
+  - **Deviation 2 (third review, T3):** closest-first made every boundary statement wrong and none right, a "perfect wall" an auditor would spot. #12 is now drawn from the 4n statements nearest a threshold (20 for n = 5), weighted 1/rank, without replacement. Clean boundary statements stay interleaved with the defective ones.
+  - **What did not change:** the count (rate × base) and the defect's meaning, a tier flipped across the nearest threshold.
+  - **Do not:** go back to a fixed-percentage window without checking that it holds at least 4n candidates at the current universe size.
