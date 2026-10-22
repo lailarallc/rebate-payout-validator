@@ -16,7 +16,7 @@
 		'$' +
 		new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(c) / 100);
 	const signed = (c) => (c > 0 ? '+' : c < 0 ? '−' : '') + cents(Math.abs(c)).replace('−', '');
-	const millions = (c) => '$' + (c / 1e8).toFixed(2) + ' million';
+	const millions = (c) => (c >= 1e8 ? '$' + (c / 1e8).toFixed(2) + ' million' : dollars(c));
 	const compact = (c) => {
 		const d = Math.abs(c) / 100;
 		if (d >= 1e6) return '$' + (d / 1e6).toFixed(1) + 'M';
