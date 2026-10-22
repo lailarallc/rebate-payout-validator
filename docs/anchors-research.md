@@ -147,9 +147,12 @@ quoted second-hand. It is the weakest anchor in the file.
 # Interpretation note — the 2–4% tier-rate band (2026-10-22, owner-confirmed)
 
 The cited 2–4% band (Hyperbots, vendor, illustrative) is read as applying to the **effective program rebate rate**: rebates paid
-÷ qualifying sell-in. Ours is **3.48%**. The individual tier rates deliberately bracket it, as real tier ladders do:
+÷ qualifying sell-in. Ours is **2.82%** (3.48% before the U1 fix). The individual tier rates deliberately bracket it, as real tier ladders do:
 1.75% (Tier 2), 3.25% (Tier 3), 5.25% incremental (Tier 4). The rates are the unchanged original v1.0 seeded draws. This note
 is interpretation, not adjustment.
 
 **Bound re-run after the second resize:** claim share 10.97% PASS; overpaid-dollar share 1.61% ($14,308 of $888,575) FAIL.
 Disclosed, not re-tuned.
+
+**Bound re-run after the fourth-review fixes and thresholds ×0.8 (2026-10-22):** claim share 10.97% PASS; overpaid-dollar share
+2.19% ($11,288 of $514,807) FAIL. Disclosed, not re-tuned. Effective rebate rate 2.82%, inside the 2–4% band.

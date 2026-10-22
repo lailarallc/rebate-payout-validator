@@ -36,17 +36,22 @@
 	const ruleHref = (rule) => '/rules#' + (SECTION[rule.slice(0, 2)] ?? '');
 
 	// ---------------------------------------------------------------- verdict charts
+	// Classes under the display floor, grouped by program (install bonus vs rebate statement).
+	const OTHER_LABEL = { spiff: 'Other install-bonus rules', tier: 'Other rebate-statement rules' };
+	function otherGroups(list) {
+		return ['spiff', 'tier']
+			.map((f) => ({ f, list: list.filter((c) => c.family === f) }))
+			.filter((g) => g.list.length)
+			.map((g) => ({ ...g, label: OTHER_LABEL[g.f] + ' (fewer than ' + S.min_display + ' decisions each)', rules: [...new Set(g.list.map((c) => c.rule))].join(', ') }));
+	}
+
 	function breakdown(field) {
 		const shown = cls.filter((c) => c.shown && c[field] > 0).sort((a, b) => b[field] - a[field]);
-		const other = cls.filter((c) => !c.shown && c[field] > 0);
 		const rows = shown.map((c) => ({ label: c.label, rule: c.rule, value: c[field], n: c.primary_count }));
-		if (other.length)
-			rows.push({
-				label: 'Other (rules with fewer than ' + S.min_display + ' decisions)',
-				rule: other.map((c) => c.rule).join(', '),
-				value: other.reduce((s, c) => s + c[field], 0),
-				n: other.reduce((s, c) => s + c.primary_count, 0)
-			});
+		// Thin classes are grouped, but by program, so the rebate program keeps a named bar.
+		for (const g of otherGroups(cls.filter((c) => !c.shown && c[field] > 0)))
+			rows.push({ label: g.label, rule: g.rules, value: g.list.reduce((s, c) => s + c[field], 0), n: g.list.reduce((s, c) => s + c.primary_count, 0) });
+		rows.sort((a, b) => b.value - a.value);
 		const max = Math.max(...rows.map((r) => r.value));
 		return rows.map((r) => ({ ...r, w: (100 * r.value) / max }));
 	}
@@ -66,7 +71,7 @@
 		return {
 			...g,
 			rows: rows.filter((c) => c.shown).sort((a, b) => b.over_cents + b.under_cents - (a.over_cents + a.under_cents)),
-			other: rows.filter((c) => !c.shown),
+			other: otherGroups(rows.filter((c) => !c.shown)),
 			over: rows.reduce((s, c) => s + c.over_cents, 0),
 			under: rows.reduce((s, c) => s + c.under_cents, 0),
 			records: rows.reduce((s, c) => s + c.primary_count, 0)
@@ -137,8 +142,8 @@
 			<span class="verdict-line">was earned under Galewick's own rules and never paid.</span>
 		</p>
 		<p class="lede">
-			Galewick paid {count(paidClaims)} contractor install bonuses and {count(S.universe.statements)} quarterly
-			distributor rebates in its {S.params.program_year} program. Payout Math re-derived every one from the
+			Galewick paid {count(paidClaims)} contractor install bonuses and issued {count(S.universe.statements)} quarterly
+			distributor rebate statements in its {S.params.program_year} program. Payout Math re-derived every one from the
 			<a href="/rules">published program rules</a>. {count(v.flagged_records)} payout decisions were wrong:
 			{count(fam.spiff.flagged_records)} on install-bonus claims and {count(fam.tier.flagged_records)} on rebate
 			statements. Overpayments and underpayments are counted separately and never netted — a contractor
@@ -183,7 +188,7 @@
 	<p class="footnote">
 		A decision that breaks several rules is counted once, under the first rule it breaks in a fixed order:
 		eligibility, then evidence, then arithmetic. Bars sum to the totals above. Rules with fewer than
-		{S.min_display} decisions are grouped as “Other”. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
+		{S.min_display} decisions are grouped, by program, as “Other”. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
 		claims still inside the {S.params.claim_processing_days}-day processing window are not counted. Received dates are
 		business-day intake dates: a claim submitted on a weekend counts as received the next business day.
 	</p>
@@ -328,16 +333,16 @@
 							<td class="num">{c.under_cents ? dollars(c.under_cents) : '—'}</td>
 						</tr>
 					{/each}
-					{#if g.other.length}
+					{#each g.other as o}
 						<tr class="other">
-							<td>{g.other.map((c) => c.rule).join(', ')}</td>
-							<td>Other (fewer than {S.min_display} decisions each)</td>
-							<td class="num">{count(g.other.reduce((s, c) => s + c.primary_count, 0))}</td>
-							<td class="num">{count(g.other.reduce((s, c) => s + c.present_count, 0))}</td>
-							<td class="num">{dollars(g.other.reduce((s, c) => s + c.over_cents, 0))}</td>
-							<td class="num">{dollars(g.other.reduce((s, c) => s + c.under_cents, 0))}</td>
+							<td>{o.rules}</td>
+							<td>{o.label}</td>
+							<td class="num">{count(o.list.reduce((s, c) => s + c.primary_count, 0))}</td>
+							<td class="num">{count(o.list.reduce((s, c) => s + c.present_count, 0))}</td>
+							<td class="num">{dollars(o.list.reduce((s, c) => s + c.over_cents, 0))}</td>
+							<td class="num">{dollars(o.list.reduce((s, c) => s + c.under_cents, 0))}</td>
 						</tr>
-					{/if}
+					{/each}
 				</tbody>
 			</table>
 		</div>
@@ -357,7 +362,8 @@
 			{count(S.universe.statements)} rebate statements are synthetic and generated from a fixed seed. The kinds of
 			error come from nineteen years of incentive-program operations. How often each one occurs follows a stated
 			scale, because no published source breaks claim errors down by type. Each kind of error is seeded at
-			exactly its rate times the number of claims or rebate statements, so the counts repeat by design. Every rule value in the
+			its rate times the number of claims or rebate statements, rounded to a whole case (at least one), so the
+			counts repeat by design. Every rule value in the
 			<a href="/rules">rulebook</a> is a seeded draw from a range with a stated basis, not a number anyone chose.
 		</p>
 		<p class="body">

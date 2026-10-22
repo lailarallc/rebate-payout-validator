@@ -166,10 +166,10 @@ the next.
 
 | Tier | Qualifying volume | Rate | How the rate applies |
 |---|---|---|---|
-| 1 | under $63,375 | 0% | — |
-| 2 | $63,375 – $204,749.99 | 1.75% | Retroactive: applies to all qualifying volume from the first dollar |
-| 3 | $204,750 – $409,499.99 | 3.25% | Retroactive: applies to all qualifying volume from the first dollar |
-| 4 | $409,500 and over | 3.25% on the first $409,500, plus **5.25%** on volume above $409,500 | Incremental above the Tier 4 threshold only |
+| 1 | under $50,700 | 0% | — |
+| 2 | $50,700 – $163,799.99 | 1.75% | Retroactive: applies to all qualifying volume from the first dollar |
+| 3 | $163,800 – $327,599.99 | 3.25% | Retroactive: applies to all qualifying volume from the first dollar |
+| 4 | $327,600 and over | 3.25% on the first $327,600, plus **5.25%** on volume above $327,600 | Incremental above the Tier 4 threshold only |
 
 ### B5. Growth bonus
 

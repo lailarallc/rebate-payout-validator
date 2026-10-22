@@ -97,3 +97,25 @@
   - **Class floor learned:** below 17 distributors (68 quarters), the O-rate tier classes (#13, #15) round to 0 cases. 20 distributors is the floor.
   - **Owner-accepted cost:** 10 of 18 classes have fewer than 5 cases: the three R install-bonus classes and all six rebate classes. They exist in the data and the claims table, and the program view groups them under "Other".
   - **Do not:** re-roll tier rates after seeing results. They are the original v1.0 draws.
+- **2026-10-22 — Fourth review (U1–U8) answered; thresholds ×0.8 (owner-approved).**
+  - **U1, one distributor was the program.** D012 accounted for 38% of sell-in and 53% of rebates, from an extreme draw of the new T1 multiplier (24× claims). Its parts, freight and returns stayed flat instead of scaling with volume.
+    - **Fixes:** the distributor-level claim multiple is truncated at ≤ 8× (re-drawn above that). Non-equipment lines scale with each month's equipment volume. Returns are 0.5–4% of each quarter's equipment volume.
+    - **Effect:** sell-in fell from $22.1M to $14.0M. At the approved thresholds, the projected total fell to $489,095, below the owner's $500K floor.
+  - **Thresholds ×0.8.** This is the sanctioned lever: thresholds follow the channel. Same draw index; the cumulative range is now ×0.156 of v1.0, giving T2 $50,700 / T3 $163,800 / T4 $327,600. The owner approved it from the dry-run projection.
+  - **Result:** matches the projection to the cent.
+    - **$514,807.41** total: $394,974 of rebates plus $119,833 of install bonuses.
+    - The effective rebate rate is 2.82%. Tier occupancy as paid is 3 / 46 / 22 / 9.
+    - 0 distributors earn $0. The largest distributor is 10.5% of sell-in. Sell-in vs claims is r = 0.67.
+    - Exact recovery, 129 of 129.
+  - **U7:** two correct denials (missing documents) are left stale-pending. They owe $0, so "pending" alone no longer singles out #11.
+  - **U2–U5, page copy:**
+    - U2: "Other" is now split by program, on the charts and in the program view.
+    - U3: duplicate rule numbers are removed from the "Other" cells.
+    - U4: the lede says "issued … rebate statements".
+    - U5: the method line says counts are "rounded to a whole case (at least one)".
+  - **U6:** accepted as taste. About 11% of lognormal draws fall under the 1.3× floor.
+  - **U8, corrections to the previous entry:**
+    - "10 of 18 classes" should read **9 of 18**: the three R install-bonus classes plus the six rebate classes.
+    - Its tier occupancy (13 / 36 / 25 / 6) was **as paid**. As earned it was 12 / 38 / 24 / 6.
+    - Its r = 0.41 was driven by the D012 outlier. Without D012 it was 0.73.
+    - At this pass, 9 classes are ranked on the page and 9 are grouped.

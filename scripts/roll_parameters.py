@@ -56,8 +56,8 @@ RANGES = {
         "basis": "CITE: per-unit HVAC $150-$600 (Pipeline On, attributed ACHR News; unverified)",
     },
     "tier2_threshold_usd": {
-        "low": 29_250, "high": 78_000, "step": 4_875,
-        "basis": "DIRECTION: tier examples at $500k / $1M (Hyperbots), scaled to a quarter; range x0.195 (x0.15 then x1.3, owner-approved channel resizes 2026-10-22) "
+        "low": 23_400, "high": 62_400, "step": 3_900,
+        "basis": "DIRECTION: tier examples at $500k / $1M (Hyperbots), scaled to a quarter; range x0.156 (x0.15, x1.3, x0.8: owner-approved channel resizes 2026-10-22) "
                  "with the universe-size revision (owner-sourced, 2026-10-16) - same draw index",
     },
     "tier3_multiple": {
@@ -154,8 +154,8 @@ def main():
         })
 
     t2 = drawn["tier2_threshold_usd"]
-    t3 = round_to(t2 * drawn["tier3_multiple"], 9_750)
-    t4 = round_to(t3 * drawn["tier4_multiple"], 9_750)
+    t3 = round_to(t2 * drawn["tier3_multiple"], 7_800)
+    t4 = round_to(t3 * drawn["tier4_multiple"], 7_800)
     r2 = drawn["tier2_rate_pct"]
     r3 = r2 + drawn["tier3_step_pct"]
     r4 = r3 + drawn["tier4_step_pct"]

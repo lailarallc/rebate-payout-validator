@@ -40,7 +40,7 @@ N_SPIFF_BASE = 1_100           # clean claims before seeding; rate denominator
 N_DISTRIBUTORS = 20
 # Distributor sell-in is driven mostly by what enrolled contractors install (the claim floor
 # below); BASE_VOLUME_SCALE sizes the rest. Together they land sell-in near the approved ~$20M,
-# which is what the x0.195 tier-threshold scale (roll_parameters.py) is sized for.
+# which is what the x0.156 tier-threshold scale (roll_parameters.py) is sized for.
 BASE_VOLUME_SCALE = 0.05
 MIN_BASE_QUARTER = 40_000         # dollars; smallest stocking distributor's base quarter (T2)
 CORRECT_REJECT_SHARE = 0.115   # direction: ~13% rejection (Navigant 2013 Con Ed eval)
@@ -539,6 +539,7 @@ def generate_claims(rng, contractors):
     reasons = rng.choices(["ineligible_model", "contractor_inactive", "late", "missing_docs",
                            "out_of_window", "duplicate"], [48, 20, 12, 12, 3, 5], k=n_reject)
     paid_valid = [cl for cl in claims if not cl["planted"] and cl["status"] == "paid" and not cl.get("rule_partial")]
+    stale_left = 2
     for why in reasons:
         c = rng.choices(contractors, weights)[0]
         cl = clean_claim(rng, serials, c)
@@ -579,9 +580,14 @@ def generate_claims(rng, contractors):
                 src["received_date"] + timedelta(days=rng.randint(1, 30)))
             cl["unit"] = False
         cl["status"] = "denied"
+        # A few invalid claims are left pending rather than denied: they correctly owe $0, so stale
+        # "pending" is not by itself a sign of #11 (fourth review U7).
+        if why == "missing_docs" and stale_left > 0 and cl["received_date"] <= DECIDED_BY:
+            cl["status"] = "pending"
+            stale_left -= 1
         cl["paid_cents"] = 0
         # Real reject logs are dirty: about half carry no reason (Navigant 2013: 53% blank)
-        cl["denial_reason"] = "" if rng.random() < 0.5 else DENIAL_TEXT[why]
+        cl["denial_reason"] = "" if (rng.random() < 0.5 or cl["status"] == "pending") else DENIAL_TEXT[why]
         extra.append(cl)
 
     # Claims not yet received by the as-of date are not in the extract.
@@ -679,7 +685,11 @@ def generate_volume(rng, distributors, claimed_units):
         did = d["distributor_id"]
         carried = d["assortment"]
         mix = {s: rng.uniform(0.5, 1.5) * (1.6 if s in INELIGIBLE else 1.0) for s in carried}
-        d_mult = rng.lognormvariate(math.log(3.0), 0.7)
+        # Truncated above 8x: one distributor must not become the program (fourth review U1).
+        while True:
+            d_mult = rng.lognormvariate(math.log(3.0), 0.7)
+            if d_mult <= 8.0:
+                break
         total_mix = sum(mix.values())
         # Annual units per SKU from the distributor's size, never below what its contractors claimed
         annual = {}
@@ -709,6 +719,7 @@ def generate_volume(rng, distributors, claimed_units):
                 n_inv = rng.randint(2, 6)
                 invoices = sorted(rand_business_day(rng, date(YEAR, month, 1), date(YEAR, month, last))
                                   for _ in range(n_inv))
+                month_equip = 0
                 for s in carried:
                     units = monthly[s][month - 1]
                     # spread the month's units over a few of the month's invoices
@@ -719,21 +730,25 @@ def generate_volume(rng, distributors, claimed_units):
                         amt = take * unit_price(d, s, when)
                         lines.append([did, when, s, take, amt])
                         equip += amt
+                        month_equip += amt
                         units -= take
+                # Parts, accessories, controls and freight scale with the equipment bought (U1).
                 for when in invoices:
                     for s in rng.sample(NON_B1, rng.randint(1, 4)):
-                        amt = round(d["base"] / 3 / n_inv * d["nonb1_share"] / 2.5 * rng.uniform(0.3, 1.7))
+                        amt = round(month_equip * d["nonb1_share"] / n_inv / 2.5 * rng.uniform(0.3, 1.7))
                         lines.append([did, when, s, 0, amt])
                         nonb1 += amt
+            # Returns scale with volume too: 0.5-4% of the quarter's equipment, in whole units (U1).
             ret = 0
             if rng.random() < 0.7:
-                for _ in range(rng.randint(1, 4)):
+                target = equip * rng.uniform(0.005, 0.04)
+                for _ in range(40):
                     s = rng.choice(carried)
-                    units = rng.randint(1, 3)
+                    units = rng.randint(1, 6)
                     when = rand_business_day(rng, date(YEAR, 3 * (q - 1) + 1, 1),
                                              date(YEAR, 3 * q, calendar.monthrange(YEAR, 3 * q)[1]))
                     amt = units * unit_price(d, s, when)
-                    if ret + amt > equip * 0.05:
+                    if ret + amt > target:
                         break
                     credits.append([did, when, s, units, amt])
                     ret += amt

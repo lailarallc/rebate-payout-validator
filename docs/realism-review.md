@@ -815,3 +815,229 @@ claims, then sorted them by claim_id.
 | T1, T2 | **Held for the owner.** Both fixes raise distributor sell-in (a wider claim-floor multiplier; a truncated base-volume tail), which would push the total payout back toward or past the owner's $1M cap. The owner barred further shape changes, so these await an owner call. |
 
 After the fixes: $835,060 approved (in band), exact recovery 303/303, 12 tests pass.
+
+---
+
+# Fourth review (1607e20)
+
+**Verdict: PASS WITH FINDINGS.** No pinned criterion is broken. My hand re-derivation from `data/*.csv`
+against rulebook v1.1 matches `build/results.json` on every record in both families. T2 is fixed. T1 is
+fixed for most distributors, but the fix produced one new tell that matters: a single distributor (D012)
+is 38% of sell-in and earns 53% of all rebates. The verdict charts now show "Other" as the largest bar
+on both sides.
+
+Constraints as before: read-only except this file, Python `-I`, stdlib only. Rulebook v1.1, thresholds
+T2 $63,375 / T3 $204,750 / T4 $409,500.
+
+## Hand re-derivation against rulebook v1.1
+
+| Family | Records off | Over | Under | Agreement with `results.json` |
+|---|---|---|---|---|
+| SPIFF | 119 | $7,930.00 | $3,132.00 | Exact. 0 disagreements. 5 claims in process (pending ≤ 35 days), none flagged. |
+| Tier | 10 | $6,378.33 | $4,140.43 | Exact. 0 disagreements. |
+
+- Totals tie to the verdict: $14,308.33 over and $7,272.43 under, on $888,574.65 approved.
+- Approved = $119,833.00 of bonuses paid + $768,741.65 of rebates paid.
+- Flagged set = planted set: 129 = 129.
+- All 18 classes are present.
+
+## Pinned criteria
+
+| Criterion | Result |
+|---|---|
+| Program-year payout ≤ $1M | $888,575. **Holds.** |
+| Rates C 2.0 / O 0.75 / R 0.2 and tier rates 1.75 / 3.25 / 5.25 | Unchanged in `parameters.json` and Table B2. **Holds.** |
+| Every one of 18 classes exists | Primary counts are 2/2/2/8/8/21/22/8/8/8/22/2/1/2/1/2/2/8. **Holds.** |
+| Classes under 5 group into "Other" | `shown=false` on exactly the 9 classes with fewer than 5 (#1, #2, #3, #12–#17). **Holds.** DECISIONS line 98 says "10 of 18" but lists nine; nine is correct (U8). |
+| Validator recovers every planted defect exactly | 129 of 129, no extras. **Holds.** |
+
+## T1 and T2 after the fix
+
+**T1 (sell-in tracks claims): fixed, with a new outlier (U1).**
+- Claimed 2025 installs are 1,225 of 6,094 Table A1 units sold (20.1%), and 16% of all 7,631 equipment units.
+- Purchased ÷ claimed units per distributor × model (n = 96 pairs with 3+ claims): min 1.28, p10 1.40,
+  median 3.56, p90 10.4, max 28.3. The 1.3–2.5 band is gone.
+- Sell-in $ vs claims: r = 0.41 overall, but **r = 0.73 without D012** (rank correlation 0.73 either way).
+  That is positive and noisy, which is fine. The 0.41 in DECISIONS line 94 comes from one outlier, not
+  from the shape of the channel.
+- 6 distributor × model pairs have claims > units bought. All 6 are claims with no invoice, so the
+  invoice model is blank. This is not a tell.
+
+**T2 (micro-distributors, $0 earners): fixed.**
+- The smallest quarters are D002-Q1 $36,502, D014-Q1 $39,342 and D018-Q1 $39,988. These are Q1
+  seasonal dips under the $40K base, and they read as small stocking houses.
+- 0 of 20 distributors earn $0 for the year. Earned-tier occupancy is T1 12 / T2 38 / T3 24 / T4 6.
+- Only D002 never leaves Tier 1. It earns $1,144, all of it growth bonus (B5.1 has no tier gate).
+- D014 earns $1,113 from one quarter (Q3, $208 over the T2 threshold).
+- Both are plausible tail members.
+
+**Scale.**
+- $22.12M of equipment sell-in plus $0.80M of parts, accessories, controls and freight.
+- 7,631 equipment units, at about $2,900 a unit.
+- 42 contractors file 3–137 claims each; the top two file 20%.
+- 1,084 paid bonuses average $110.
+
+Apart from U1, this reads like a small regional manufacturer with two instruments. The repeated
+exact counts are disclosed on the method page (T4a), and I found no staged counts beyond them. The
+multi-defect mix (8 × 7+8, 7 × 4+8, 1 × 4+6+8) follows the F8 design.
+
+## Prior fixes
+
+| # | Check | Result |
+|---|---|---|
+| R1 | Day-35 boundary | Pending claims aged 4, 10, 10, 11 and 25 days are not flagged. All 9 aged 44–270 days are #11. **Survived.** |
+| R2 | Malformed names | 0 tripled letters, no q without u, across 62 names. **Survived.** |
+| R3 | Baseline vs enrollment | All 20 distributors have 2024 baselines. **Survived** (moot). |
+| R4 | Year-end defects | Planted installs run through 2025-12 (8) and 2026-01 (3). The final 35-day window has 9 claims and 0 planted, as designed. **Survived.** |
+| R5 | Multi-defect page line | `+page.svelte:156`. Still accurate: every multi-defect record carries #8 with #4 or #7. **Survived.** |
+| R6 | Deadline pile-ups | 3 invoice documents on day 60. 0 weekend received or invoice dates. **Survived.** |
+| R7 | Monday intake line | Present at `+page.svelte:186–187`. Monday is 522 vs 168–196 on other weekdays. **Survived.** |
+| T3 | #12 wall | Ranked by distance to threshold: 0 D004-Q2 (#16), 1 D014-Q3 clean, 2 D018-Q2 (#17), 3 D008-Q1 clean, 4 D016-Q2 clean, 5 D017-Q2 #12, 6 D020-Q3 #12. Interleaved. **Survived.** |
+| T4 | Exact counts disclosed | `+page.svelte:359–360`. **Survived.** See U5 for the wording. |
+| T5 | One-unit lines | 1,092 of 2,140 equipment lines are 1–2 units (51%, down from 70%). **Improved.** |
+| F1/F3/F10 | Spot checks | 0 claims received before 2025. Furnace units by quarter: 538 / 311 / 521 / 783. 0 weekend purchase lines. **Survived.** |
+
+## Findings — breaks a pinned criterion
+
+None.
+
+## Findings — realism and page copy (ranked)
+
+### U1 (Medium-High tell): one distributor is the program
+- **What:** D012 is drawn far above the rest of the channel, and its side ledgers did not scale with it.
+- **Evidence:**
+  - D012 buys $8,431,294 of equipment, which is **38.1% of sell-in**. It is 5.0× the next largest
+    (D003, $1,681,811).
+  - It earns **$408,440 of $766,504 in rebates (53.3%)**, more than the other 19 distributors
+    combined.
+  - All four of its quarters are Tier 4 ($1.78M–$2.37M a quarter). That makes 4 of the program's 6
+    Tier-4 quarters.
+  - Its eligible-unit multiple is 24.3× claims: 113 claims from 3 contractors against 2,874 units. The
+    program median is about 3.
+  - Its non-equipment purchases are $39,828, which is **0.5%** of its total. The other 19 run 1.5–14%.
+    Every distributor's non-equipment spend sits in a flat $16K–$72K band, whatever its size.
+  - Its return credits are $27,475, or 0.33% of volume. Others run about 1–5%.
+  - The headline figures lean on it. The effective rebate rate is 3.48% with D012 and **2.61%
+    without**. Sell-in vs claims is r = 0.41 with it and 0.73 without.
+- **Why:**
+  - A sponsor who sorts the rebate table by payout sees one account taking more than half the
+    rebate dollars.
+  - A sponsor who looks at its ledger sees parts, freight and returns that do not grow with volume.
+    A real 38% master distributor buys freight and parts in proportion to its equipment.
+  - The 2–4% band reading in `anchors-research.md` now depends on one draw.
+- **Smallest fix:**
+  - Truncate the distributor base-volume lognormal at the top and re-draw above the cap. For
+    example, cap the largest distributor at ≤ 20–25% of sell-in, or at ≤ 2.5× the second largest.
+  - Draw non-equipment lines and return credits as a share of equipment volume, not as a
+    per-distributor level.
+  - This lowers the payout, so the $1M cap is safe. Statement count is unchanged, so the #13/#15
+    floor is unaffected.
+  - Re-check that the effective rebate rate stays inside 2–4%. On this data, without D012, it is
+    2.61%.
+
+### U2 (Medium, page copy): "Other" is the biggest bar on both verdict charts
+- **What:** at 20 distributors every rebate class has fewer than 5 cases. The count floor now hides
+  the largest-dollar classes.
+- **Evidence:**
+  - "Where the overpayment came from": **Other $6,758 of $14,308 (47%)**, from 11 decisions. The
+    largest named bar is #6 at $2,365. #12 alone ($4,099, 2 decisions) is the largest overpayment
+    class on the page, and it is inside Other.
+  - "Where the underpayment came from": **Other $4,390 of $7,272 (60%)**. #17 alone ($3,031) beats
+    the largest named bar (#11, $2,310).
+  - The rebate program is 86.5% of approved dollars, yet it has no named row on either chart or in
+    the program view. The "Calculated by Galewick" Other row reads "A6.2, B4.1, B4, B3.2, B5.2, B3.3,
+    B4.2": seven rules in one cell.
+- **Why:** the page's headline answers "where did the money go?" with "Other". The prose under it
+  ("$10,519 of the total sits on 10 distributor rebate statements") is correct but cannot be traced to
+  any bar.
+- **Smallest fix:** keep the pinned under-5 floor, but split "Other" by family into "Other install-bonus
+  rules" and "Other rebate-statement rules", on the charts and in the program view. That gives two
+  bars of about $380 and $10,519, and the rebate bar names its program. The change is to `breakdown()`
+  (`+page.svelte:42–49`) and the group rows. No data changes.
+
+### U3 (Low, page bug): "A6.1, A6.1"
+- **What:** the submitted-group Other row joins rule numbers without removing duplicates.
+- **Evidence:** #1 and #2 are both A6.1, so `+page.svelte:333` renders "A6.1, A6.1".
+- **Smallest fix:** `[...new Set(g.other.map((c) => c.rule))].join(', ')`.
+
+### U4 (Low, page copy): "paid … 80 quarterly distributor rebates"
+- **What:** the lede says Galewick paid 80 quarterly rebates.
+- **Evidence:** `+page.svelte:140`. 10 of the 80 statements paid $0 (Tier 1, no growth bonus).
+- **Smallest fix:** "issued 80 quarterly rebate statements".
+
+### U5 (Low, page copy): "exactly its rate times" is not exact at this base
+- **What:** the counts are rounded, so the method line overstates them.
+- **Evidence:**
+  - 0.75% × 80 statements = 0.6, seeded as 1 (#13, #15).
+  - 0.2% × 1,100 = 2.2, seeded as 2.
+  - 0.75% × 1,100 = 8.25, seeded as 8.
+- **Smallest fix:** "…at its rate times the number of claims or rebate statements, rounded to a whole
+  case (at least one)" (`+page.svelte:359–360`).
+
+### U6 (Low, taste): the floor still binds on a few distributors
+- **Evidence:**
+  - D005 sits at 1.30× and D009 at 1.31×. At D005, 3 enrolled contractors claim 135 of its 175 eligible
+    units (77%).
+  - D011 (1.54×) and D007 (1.60×) are near the floor too.
+- **Why it is only taste:** a lognormal with median 3 and σ 0.7 puts about 11% of draws under 1.3,
+  so 2 of 20 is expected.
+- **Fix:** accept, or lower the floor to 1.15.
+
+### U7 (Low, pre-existing taste): stale pending is still a perfect oracle for #11
+- **Evidence:** all 9 claims pending more than 35 days are #11. None is an invalid claim left
+  pending, which would correctly owe $0.
+- **Smallest fix:** route 1–2 correct denials (for example, a missing registration) to "pending" in
+  the generator. The validator already treats them as earning $0.
+
+### U8 (Low, record accuracy): DECISIONS figures
+- **Evidence:**
+  - Line 98 says "10 of 18 classes" but lists 3 + 6 = 9 classes; `summary.json` has 9 with
+    `shown=false`.
+  - Line 95's tier occupancy (13 / 36 / 25 / 6) is the tier as paid. As earned it is 12 / 38 / 24 / 6.
+  - Line 94's r = 0.41 is driven by D012 (see U1).
+- **Smallest fix:** correct to 9, label the occupancy "as paid", and note the outlier.
+
+## Fresh sample — 15 claims
+
+**Method:** `random.Random(16072025)`. I drew 6 clean paid, 3 correctly denied and 6 planted claims,
+then sorted them by claim_id.
+
+| Claim | Kind | Reads real? | Note |
+|---|---|---|---|
+| A000157 | clean | Yes | HP18 installed Mar 19, paid the $200 spring rate. |
+| A000266 | clean | Yes | HP16 spring $105. The invoice document came 11 days after the claim. |
+| A000346 | correct deny | Yes | AC13, "Model not eligible". |
+| A000364 | clean | Yes | AC17 in late May, standard $120. |
+| A000536 | clean | Yes | AC15, $50. |
+| A000589 | #8 | Yes | The registration arrived 111 days after install, and the claim was paid in full. |
+| A000598 | correct deny | Yes | C0013 was terminated 2025-06-25 and the install is 07-11. Blank reason. |
+| A000650 | #8 | Yes | No invoice on file, paid $135. |
+| A000677 | #7+8 | Yes | HP14 invoice, claim says HP16, paid $70. |
+| A000837 | clean | Yes | — |
+| A000984 | #11 pending | Yes | D012 FG98M, pending since Oct 22. |
+| A001038 | correct deny | Yes | No registration. Blank reason. |
+| A001049 | #11 denied | Yes | Denied "Received after deadline" although it was filed on day 26. |
+| A001176 | clean | Yes | Furnace installed Dec 20, filed in 10 days. |
+| A001196 | #5 | Yes | AC15 installed 2026-01-06 and paid. |
+
+**Result:** 15 of 15 read real.
+
+## Fresh sample — 10 distributor-quarters
+
+**Method:** the same RNG continued. I drew 6 clean and 4 planted statements.
+
+| Statement | Kind | Reads real? | Note |
+|---|---|---|---|
+| D003-Q2 | clean | Yes | $470,974, Tier 4 incremental, $16,536. |
+| D004-Q3 | clean | Yes | $184,343, Tier 2, down 3% on 2024. |
+| D008-Q2 | clean | Yes | $308,421, Tier 3. |
+| D009-Q2 | #17 | Yes | $109,624 earns Tier 2, but Q1's Tier 1 was carried forward: $1,918 underpaid. |
+| D013-Q2 | #13 | Yes | Tier 2 paid incrementally: $1,938 instead of $3,047. |
+| D014-Q4 | clean | Yes | $46,400, Tier 1, $0. A small stocking house in a slow quarter, no longer a dealer (T2 fixed). |
+| D015-Q1 | #14 | Yes | Rebate computed on $286,175 gross, before $10,931 of credits. |
+| D015-Q4 | clean | Yes | 115% of baseline, growth bonus paid. |
+| D018-Q3 | #15 | Yes | Growth paid at 106% of the real baseline. |
+| D019-Q4 | clean | Yes | Tier 3 plus growth. |
+
+**Result:** 10 of 10 read real one at a time. D012 did not come up in the draw. Read on its own, any
+D012 quarter is a believable large Tier-4 statement. U1 shows only in the cross-section.
