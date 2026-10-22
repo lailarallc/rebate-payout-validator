@@ -75,19 +75,19 @@
     },
     {
       "tier": 2,
-      "threshold_usd": 325000,
+      "threshold_usd": 48750,
       "rate_pct": 1.75,
       "method": "retroactive"
     },
     {
       "tier": 3,
-      "threshold_usd": 1050000,
+      "threshold_usd": 157500,
       "rate_pct": 3.25,
       "method": "retroactive"
     },
     {
       "tier": 4,
-      "threshold_usd": 2100000,
+      "threshold_usd": 315000,
       "rate_pct": 5.25,
       "method": "incremental"
     }
@@ -146,10 +146,10 @@
       "basis": "CITE: per-unit HVAC $150-$600 (Pipeline On, attributed ACHR News; unverified)"
     },
     "tier2_threshold_usd": {
-      "low": 150000,
-      "high": 400000,
-      "step": 25000,
-      "basis": "DIRECTION: tier examples at $500k / $1M (Hyperbots), scaled to a quarter"
+      "low": 22500,
+      "high": 60000,
+      "step": 3750,
+      "basis": "DIRECTION: tier examples at $500k / $1M (Hyperbots), scaled to a quarter; range x0.15 with the universe-size revision (owner-sourced, 2026-10-16) - same draw index"
     },
     "tier3_multiple": {
       "low": 2.5,
@@ -215,7 +215,7 @@
     "spring_uplift_pct": 50,
     "bonus_floor_usd": 50,
     "bonus_ceiling_usd": 180,
-    "tier2_threshold_usd": 325000,
+    "tier2_threshold_usd": 48750,
     "tier3_multiple": 3.25,
     "tier4_multiple": 2.0,
     "tier2_rate_pct": 1.75,

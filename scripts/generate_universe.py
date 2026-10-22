@@ -34,9 +34,14 @@ SPIFF_TAGS = {1: "R", 2: "R", 3: "R", 4: "O", 5: "O", 6: "C", 7: "C", 8: "O", 9:
 TIER_TAGS = {12: "C", 13: "O", 14: "C", 15: "O", 16: "C", 17: "C"}
 
 # Universe size (design gate, pinned)
-N_CONTRACTORS = 350
-N_SPIFF_BASE = 12_000          # clean claims before seeding; rate denominator
-N_DISTRIBUTORS = 160
+# Universe size: owner-sourced revision 2026-10-16 (DECISIONS) — program-year payout $500K-$1M.
+N_CONTRACTORS = 95
+N_SPIFF_BASE = 2_500           # clean claims before seeding; rate denominator
+N_DISTRIBUTORS = 60
+# Distributor sell-in is driven mostly by what enrolled contractors install (the claim floor
+# below); BASE_VOLUME_SCALE sizes the rest. Together they land sell-in near the approved ~$20M,
+# which is what the x0.15 tier-threshold scale (roll_parameters.py) is sized for.
+BASE_VOLUME_SCALE = 0.05
 CORRECT_REJECT_SHARE = 0.115   # direction: ~13% rejection (Navigant 2013 Con Ed eval)
 
 YEAR = PARAMS["program_year"]
@@ -188,7 +193,7 @@ def make_distributors(rng):
             "name": f"{place(rng, used)} {rng.choice(DISTRIBUTOR_KIND)}",
             "enrollment_date": (rand_date(rng, date(YEAR - 1, 10, 1), date(YEAR - 1, 12, 31)) if new
                                 else rand_date(rng, date(2016, 1, 1), date(YEAR - 1, 9, 30))),
-            "base": rng.lognormvariate(math.log(650_000), 0.75) * 100,   # cents per quarter
+            "base": rng.lognormvariate(math.log(650_000 * BASE_VOLUME_SCALE), 0.75) * 100,   # cents per quarter
             "discount": rng.uniform(0.88, 0.97),
             "growth": rng.gauss(1.03, 0.08),
             "assortment": carried,
@@ -508,7 +513,7 @@ def generate_claims(rng, contractors):
                        (src["serial"], model2, unit["distributor_id"])]
 
     # Benign collisions: both units claimed and correctly paid (realism, not defects)
-    for src in rng.sample([cl for cl in over_pool if not cl["planted"]], 10):
+    for src in rng.sample([cl for cl in over_pool if not cl["planted"]], 3):
         while True:
             c = rng.choice([x for x in contractors if x["home_distributor_id"] != src["distributor_id"]])
             model2 = rng.choice([m for m in c["home"]["assortment"] if m in ELIGIBLE and m != src["claim_model"]])
@@ -781,19 +786,19 @@ def generate_statements(rng, distributors, quarters):
         s["method_applied"] = correct_method(s["tier_applied"]) if s["tier_applied"] > 1 else "none"
         s["planted"].append(17)
 
-    # #12 wrong threshold comparison (F4): volume within 3% of a threshold, tier flipped across it
+    # #12 wrong threshold comparison (F4): seeded on the statements whose volume sits closest
+    # to a threshold, tier flipped across it. Closest-first rather than a fixed window, so a
+    # small universe still has enough boundary cases.
     thresholds = [100 * t["threshold_usd"] for t in TIERS[1:]]
     n, done = n_for(TIER_TAGS[12], base), 0
-    cands = [k for k in keys if not stmts[k]["planted"]]
-    rng.shuffle(cands)
+    rel = lambda k: min(abs(stmts[k]["volume_basis_cents"] - th) / th for th in thresholds)  # noqa: E731
+    cands = sorted((k for k in keys if not stmts[k]["planted"]), key=lambda k: (rel(k), k))
     for k in cands:
         if done == n:
             break
         s = stmts[k]
         vol = s["volume_basis_cents"]
-        near = [i for i, th in enumerate(thresholds) if abs(vol - th) <= th * 0.03]
-        if not near:
-            continue
+        near = [min(range(len(thresholds)), key=lambda i: abs(vol - thresholds[i]) / thresholds[i])]
         th_tier = near[0] + 2                       # tier whose threshold this is
         t = th_tier - 1 if vol >= thresholds[near[0]] else th_tier
         prior = true_tier.get((k[0], k[1] - 1))

@@ -127,6 +127,11 @@ No re-tuning if the verdict is undramatic. The verdict lands where it lands.
 **Re-run after re-review fixes R1–R6 (2026-10-16):** claim share 11.16% PASS; overpaid-dollar share 2.27%
 ($302,607 of $13,310,557) FAIL. Disclosed, not re-tuned.
 
+**Re-run after the owner-sourced universe resize (2026-10-22):** claim share 11.34% PASS; overpaid-dollar share
+2.75% ($22,609 of $819,580) FAIL. Disclosed, not re-tuned. Payout as a share of sell-in is 3.7% (rebates 2.49%, inside
+the cited 2–4% tier-rate band). It sits below the whole-program 8–20% (Zinfi, vendor) and 15–24% (The Channel Company/IPED
+2019) figures, which include instruments Galewick does not run.
+
 **Why the dollar bound fails, stated plainly:** the pinned per-record rates (C 2.0 / O 0.75 / R 0.2)
 put about 2–11% of *records* in defect. Distributor rebates are 91% of approved dollars, but only 60 of
 640 distributor-quarters carry a defect, and a defect there moves a fraction of the rebate, not all of

@@ -46,3 +46,24 @@
     - Install weekday weights are Sat 0.4, Sun 0.1, holidays 0.1, because residential installs are mostly weekday work.
     - A mid-year list-price increase of +4% applies from Jul 1. It is STRUCTURAL.
   - **Do not:** seed a defect that the channel structure makes impossible. Contractor claims never exceed their distributor's sell-in, and a test enforces this.
+- **2026-10-22 — Universe size revised. This is an owner-sourced (PRACTITIONER) realism-scale correction, not verdict tuning.**
+  - **Owner's rationale:** a ~$13M program-year payout is unrealistic for a program of this shape. The demo sponsor has to read like the buyer, a smaller program, without spooking them with scale. The owner set the band: program-year payout of **$500K–$1M at most**.
+  - **Diagnosis:** the distributor side modeled a $488M sell-in channel, while the contractor side implied a far smaller one. Only 6% of units sold were claimed.
+  - **Shapes proposed:**
+    1. $3–4M (×0.2), rejected as too large.
+    2. $2.5–3M (×0.12), rejected.
+    3. 120 contractors / 3,200 claims / 60 distributors / ×0.10, approved, but it landed at $1.22M. The distributor floor (sell-in ≥ 1.3–2.5× claimed units) lifted sell-in to $27M, and the ×0.10 thresholds then tipped 43 of 240 quarters into Tier 4.
+    4. **95 contractors / 2,500 claims / 60 distributors × 4 quarters / tier-threshold range ×0.15 / base volume ×0.05**, approved as a band.
+  - **Actual result:** **$819,580**, which is $548,126 of rebates plus $271,454 of install bonuses.
+    - Sell-in is $22.0M, and payout is 3.7% of sell-in. Rebates are 2.49%, inside the cited 2–4%.
+    - Tier occupancy is T1 113 / T2 83 / T3 33 / T4 11.
+    - Claimed units are 35% of units sold.
+  - **Unchanged:** every pinned rate (C 2.0 / O 0.75 / R 0.2), every program parameter except the threshold range, and the rule text. The threshold draw index is the same as before; only the range is scaled.
+  - **Defect coverage:** all 18 classes are still present. The R classes have exactly 5 each, so they clear the display floor. The tier O classes (#13, #15) have 2 each and group into "Other".
+  - **Generator change forced by the size:** #12 is now seeded on the statements closest to a threshold, rather than within a fixed 3% window. That window held only 3 statements out of 240.
+  - **Cited band check:** total payout as a share of sell-in (3.7%) sits below the only published whole-program figures:
+    - Zinfi (vendor): 8–20% for commissions, rebates, MDF and SPIFFs combined.
+    - The Channel Company/IPED 2019: 15–24% of the total channel budget.
+
+    Those figures cover instruments Galewick does not run. The rebate share is inside its cited band.
+  - **Do not:** re-scale the universe to move the verdict. Sizes move only on an owner realism call, and rates never move.

@@ -80,6 +80,8 @@ Caveat: published rejection rates measure defects *caught* before payment. Seede
 - Multi-defect claim count reported at full size.
 - **#18 (new, practitioner addition): ad-hoc partial payment with no rule basis.** Over if partial paid on a $0-earned claim; under if partial paid on a fully valid claim. Rule-consistent partials are not defects → Galewick rules must publish at least one explicit partial-pay rule. Tag: **O** (P). Owner typed "0"; read as O.
 
+**Resized 2026-10-22 (owner-sourced, DECISIONS):** 95 contractors, 2,500-claim rate base, 60 distributors × 4 = 240 member-periods, and a $500K–$1M program-year payout. Rates are unchanged.
+
 ## Open
 - Universe size (members, claims/period), program rules detail → design gate.
 - Data home: brief lean = one repo, data generated in-repo.
