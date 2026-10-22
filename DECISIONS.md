@@ -119,3 +119,16 @@
     - Its tier occupancy (13 / 36 / 25 / 6) was **as paid**. As earned it was 12 / 38 / 24 / 6.
     - Its r = 0.41 was driven by the D012 outlier. Without D012 it was 0.73.
     - At this pass, 9 classes are ranked on the page and 9 are grouped.
+- **2026-10-22 — Fifth review (V1–V5) answered. Equipment, claims and statements are byte-identical to the reviewed universe.**
+  - **V1, generator bug.** The return-credit loop stopped at the first oversized draw, so only 11 of 80 quarters carried returns. The loop now skips an overshooting draw and stops once it reaches 60% of the target. 47 of 80 quarters now carry returns.
+  - **V5.** The four non-equipment categories had come out equal in dollars. They are now weighted: parts 1.5, freight 1.1, accessories 0.8, controls 0.6 (STRUCTURAL).
+  - **How the fixes were isolated:** returns and non-equipment values come from a side seeded stream (`SEED + 1`). The main stream still consumes the legacy draws but discards their values (`_burn_legacy_return_draws`), so `claims.csv` and every equipment line are byte-identical to 563b5c6.
+    - The first attempt, without the burn, reshuffled the universe: sell-in vs claims went to r = 0.79. It was replaced before any regeneration.
+  - **Result:** matches the projection to the cent.
+    - **$521,804.21** total: $401,971 of rebates plus $119,833 of install bonuses.
+    - Sell-in is $13.99M, and r = 0.67.
+    - 0 distributors earn $0. Tier occupancy as paid is 2 / 46 / 23 / 9.
+    - Exact recovery, 129 of 129.
+  - **V2, accepted.** The entry tier is a stocking hurdle that every enrolled distributor is expected to clear: T2 is $50,700 against a $40K minimum base quarter, so Tier 1 holds only the odd slow quarter. Lowering the minimum base would cost payout margin against the $500K floor.
+  - **V3.** The verdict footnote now points readers to the claims table, filtered to the rebate program, to see the grouped rebate rules one by one.
+  - **V4, noted for the owner.** Underpaid ($7,336) and overpaid ($17,597) have traded places over the resizes. The headline still leads with overpaid, as pinned.

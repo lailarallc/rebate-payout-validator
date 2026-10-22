@@ -1041,3 +1041,163 @@ then sorted them by claim_id.
 
 **Result:** 10 of 10 read real one at a time. D012 did not come up in the draw. Read on its own, any
 D012 quarter is a believable large Tier-4 statement. U1 shows only in the cross-section.
+
+---
+
+# Fifth review (563b5c6)
+
+**Verdict: PASS WITH FINDINGS.** No pinned criterion is broken. U1 is fixed. My hand re-derivation
+against rulebook v1.1, with the new thresholds, matches `build/results.json` exactly. U7, U3, U4 and U5
+are fixed, and U2 is fixed as specified. Two new findings come from this pass:
+- the return-credit fix does not do what DECISIONS says (V1);
+- with thresholds ×0.8, Tier 1 is almost empty (V2).
+
+Neither blocks a push. V1 is a record-accuracy problem and a one-line generator fix.
+
+Scope: changed surfaces only. Read-only except this file, Python `-I`, stdlib only. Thresholds
+T2 $50,700 / T3 $163,800 / T4 $327,600 (Table B2 and `parameters.json` agree). Rates are unchanged.
+
+## Hand re-derivation against rulebook v1.1
+
+| Family | Records off | Over | Under | Agreement with `results.json` |
+|---|---|---|---|---|
+| SPIFF | 119 | $7,930.00 | $3,132.00 | Exact. 0 disagreements. 5 in process, none flagged. |
+| Tier | 10 | $3,358.28 | $11,362.30 | Exact. 0 disagreements. |
+
+- Totals: $11,288.28 over and $14,494.30 under, on $514,807.41 approved.
+- Approved = $119,833.00 of bonuses + $394,974.41 of rebates.
+- Flagged = planted: 129 = 129. All 18 classes are present, with primary counts unchanged
+  (2/2/2/8/8/21/22/8/8/8/22/2/1/2/1/2/2/8).
+- The payout of $514,807 sits inside the owner's $500K–$1M band, $14.8K above the floor.
+
+## (1) U1: fixed
+
+| Measure | Fourth review | Now |
+|---|---|---|
+| Largest distributor share of sell-in | D012 38.1% | D012 10.5% (top 3: 30%) |
+| Largest share of rebates | D012 53.3% | D005 13.0% (D012 12.5%) |
+| Largest distributor ÷ second largest | 5.0× | 1.004× (D012 $1.464M vs D005 $1.458M) |
+| Non-equipment share of purchases, by distributor | flat $16K–$72K; 0.5%–14% | $25K–$215K, scaling with size; 8.1%–16.9% (by quarter 6.7%–18.4%) |
+| Sell-in $ vs claims, r | 0.41 (0.73 without D012) | 0.67 (0.64 without D012; rank 0.76) |
+| Purchased ÷ claimed, per distributor × model (n = 96) | median 3.56, max 28.3 | median 3.37, p90 5.85, max 13.0 |
+
+- **No new outlier.** The highest distributor-level multiple is D002 at 8.2× (9 claims, 121 units).
+- **Effective rebate rate:** 2.82%, inside 2–4% without depending on any one draw.
+- **Claimed share of eligible units:** 35.6% (1,225 of 3,440), up from 20%. Three distributors now sit
+  at or under the old floor:
+  - D015 1.20× (94 claims, 83% of its eligible units);
+  - D016 1.25×;
+  - D003 1.31×. D003 has 195 claims, the most in the program, on the 7th-largest sell-in.
+
+  This is the U6 shape, already accepted as taste. Listed only because there are three now.
+- **Returns: not fixed as recorded.** See V1.
+
+## (2) Re-derivation
+
+Exact. See the table above.
+
+## (3) U7 and R1
+
+- **U7 works.** The stale pending claims are now:
+  - 9 claims aged 44–270 days, all #11;
+  - A000437 (254 days; no registration, so it correctly owes $0);
+  - A000029 (389 days; no invoice, so it correctly owes $0).
+
+  Neither of the last two is flagged, and both carry a blank reason. Pending is no longer an oracle
+  for #11.
+- **R1 intact.** The claims aged 4, 10, 10, 11 and 25 days are in process and not flagged.
+- **Taste:** A000029 is the oldest pending claim in the file (389 days). One stale invalid claim is
+  enough; the long age is believable for a backlog.
+
+## (4) Copy as rendered from `summary.json`
+
+| Item | Rendered | Ruling |
+|---|---|---|
+| U2 over chart | "Other rebate-statement rules (fewer than 5 decisions each)" B3.2, B3.3: **$3,358 · 4 decisions**, now the top bar (above #6 $2,365). "Other install-bonus rules" A6.1: $380 · 4. | Fixed as specified. The rebate program now has a named bar. |
+| U2 under chart | "Other rebate-statement rules" B4.1, B4, B5.2, B4.2: **$11,362 · 6 decisions (78% of $14,494)**. "Other install-bonus rules" A6.2: $250 · 2. | Fixed as specified. See V3 for taste. |
+| U2 program view | Submitted: "A6.1 · Other install-bonus rules". Calculated: "A6.2 · Other install-bonus rules" and "B4.1, B3.2, B4, B5.2, B3.3, B4.2 · Other rebate-statement rules". | Reads right. |
+| U3 | "A6.1" appears once. `new Set` dedupes the rule numbers. | Fixed. |
+| U4 | "…issued 80 quarterly distributor rebate statements…" (3 of 80 paid $0). | Fixed. |
+| U5 | "…rounded to a whole case (at least one), so the counts repeat by design." | Fixed and accurate. |
+| Footnote | "grouped, by program, as 'Other'". | Fine. |
+| Headline | "$11,288 of $514,807 approved for payout should never have been approved." / "$14,494 was earned … and never paid." | Correct values. See V4. |
+| Program prose | Submitted errors are 79 decisions and $7,750. Calculated errors are $18,032 (69.9%) and average $361. $14,721 sits on 10 rebate statements. | Reads right. |
+| Bound | Overpaid-dollar share 2.2% vs 10–15%: FAIL, disclosed. Claim share 11.0%: PASS. | Unchanged disposition. |
+
+## Findings — breaks a pinned criterion
+
+None.
+
+## Findings — new (ranked)
+
+### V1 (Medium, record accuracy plus generator bug): the return-credit fix stops after one draw
+- **What:** DECISIONS says "Returns are 0.5–4% of each quarter's equipment volume." The data does not
+  show that.
+- **Evidence:**
+  - Only **11 of 80** distributor-quarters have any return credit, 13 credits in all. At 1607e20 there
+    were 58.
+  - The median return share is 0%. The maximum is 3.7%.
+  - The cause is the loop in `generate_volume`. It draws 1–6 units × unit price, then `break`s as soon
+    as one draw exceeds the target. One draw of about $2–3K × 1–6 units usually exceeds 0.5–4% of a
+    $50K–$450K quarter, so roughly 80% of the 70% of quarters meant to have returns end with none.
+- **Why:**
+  - The recorded fix and the data disagree. An auditor reading DECISIONS and then the credits
+    file will notice.
+  - It also cuts the pool #14 can be seeded from to 11 quarters.
+  - It does not change any payout already validated, and recovery stays exact.
+- **Smallest fix:** in the draw loop, `continue` (skip that draw) instead of `break` when one draw
+  overshoots, and stop when the target is reached. Or draw `units = 1` while `ret` is below the target.
+  - This changes the tier figures. Re-check the $500K floor: returns reduce volume, at roughly −1.5%
+    of rebates, about −$6K, which leaves about $9K of margin.
+  - Alternatively, amend the DECISIONS line to say what the data does: "about one quarter in seven
+    carries a return credit".
+
+### V2 (Medium-Low tell): Tier 1 is nearly empty
+- **What:** after thresholds ×0.8, T2 ($50,700) sits just 27% above the $40K minimum base quarter.
+- **Evidence:**
+  - Earned-tier occupancy is **1 / 47 / 22 / 10**. Only D010-Q1 ($48,689) is in Tier 1. As paid it is
+    3 / 46 / 22 / 9.
+  - 79 of 80 quarters earn a tier rebate.
+  - The next-smallest quarters cluster just over T2: D016-Q1 $51,002, D016-Q4 $53,454, D014-Q2 $56,330.
+  - Tier 4 holds 10 quarters across 5 distributors, ten times as many as Tier 1.
+- **Why:** a sponsor reading Table B2 sees a 0% entry tier that almost nobody sits in. The ladder looks
+  as though it was set so that everyone gets paid, which in fact is how the threshold was chosen
+  (to clear the $500K floor). Some real programs do set the entry hurdle below every stocking
+  distributor, so this is a tell, not an error.
+- **Smallest fix:** choose one.
+  - **(a)** Accept it, and add one line to DECISIONS: "entry tier is a stocking hurdle every enrolled
+    distributor is expected to clear".
+  - **(b)** Lower `MIN_BASE_QUARTER` to about $25–30K so that about 10% of quarters fall into Tier 1.
+    Project the payout first: it moves down, against $14.8K of margin. Only do this together with V1
+    if both fit.
+
+### V3 (Low, taste): the under chart is 78% one grouped bar
+- **Evidence:** "Other rebate-statement rules" is $11,362 of $14,494 underpaid, against #11 at $2,310.
+  It is also the top bar on the over chart.
+- **Why it is only taste:** it now names its program, and it is true that rebate arithmetic is where
+  the underpayment sits. The pinned under-5 floor is what keeps #17 ($4,219) and #13 ($3,344) unnamed.
+- **Fix:** none required. Optionally, add a sub-line under the chart: "Four rebate rules, six statements;
+  see the claims table filtered to Distributor volume rebate."
+
+### V4 (Low, taste): the smaller number leads the headline
+- **Evidence:** underpaid ($14,494) now exceeds overpaid ($11,288), but the headline leads with the
+  overpaid figure.
+- **Why it is only taste:** both lines carry equal weight, the page never nets them, and the
+  "should never have been approved" line is the program's thesis. No change is needed. Flagged only
+  so the owner knows the ordering flipped.
+
+### V5 (Low, pre-existing taste): the four non-equipment categories are equal in dollars
+- **Evidence:** PARTS $480,600, ACCESSORIES $464,142, FREIGHT $463,810, CONTROLS $459,943. At 1607e20
+  the split was also equal, $189K–$214K each.
+- **Why:** in a real ledger, freight and controls are smaller than parts and accessories.
+- **Smallest fix:** weight `rng.sample(NON_B1, …)` amounts by category, for example
+  parts 40 / accessories 30 / controls 15 / freight 15.
+
+## Prior checks spot-run on the new data
+
+T3 is still interleaved. Ranked by distance to a threshold: 0 D016-Q1 #12, 1–3 clean, 4 D012-Q2 #14,
+5 D007-Q3 #13, 6–7 clean, 8 D016-Q4 #12.
+
+R2–R7 are unchanged; the claims did not move except the two U7 claims. F1 and F3 still hold:
+0 claims received before 2025, and furnace units by quarter are 346 / 186 / 315 / 454.
+T5: 1,043 of 1,767 equipment lines are 1–2 units.

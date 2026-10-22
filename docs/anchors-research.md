@@ -156,3 +156,6 @@ Disclosed, not re-tuned.
 
 **Bound re-run after the fourth-review fixes and thresholds ×0.8 (2026-10-22):** claim share 10.97% PASS; overpaid-dollar share
 2.19% ($11,288 of $514,807) FAIL. Disclosed, not re-tuned. Effective rebate rate 2.82%, inside the 2–4% band.
+
+**Bound re-run after the fifth-review fixes (2026-10-22):** claim share 10.97% PASS; overpaid-dollar share 3.37% ($17,597 of
+$521,804) FAIL. Disclosed, not re-tuned. Effective rebate rate is 2.87% of sell-in.

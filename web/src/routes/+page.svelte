@@ -188,7 +188,8 @@
 	<p class="footnote">
 		A decision that breaks several rules is counted once, under the first rule it breaks in a fixed order:
 		eligibility, then evidence, then arithmetic. Bars sum to the totals above. Rules with fewer than
-		{S.min_display} decisions are grouped, by program, as “Other”. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
+		{S.min_display} decisions are grouped, by program, as “Other”. To see the grouped rebate-statement rules one by one,
+		filter the claims table below to the distributor volume rebate. Records as of {S.universe.as_of}; {count(S.universe.in_process_claims)}
 		claims still inside the {S.params.claim_processing_days}-day processing window are not counted. Received dates are
 		business-day intake dates: a claim submitted on a weekend counts as received the next business day.
 	</p>

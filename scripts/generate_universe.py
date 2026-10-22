@@ -81,6 +81,8 @@ LIST_PRICE = {"GW-AC13": 210000, "GW-AC15": 265000, "GW-AC17": 340000, "GW-HP14"
               "GW-FG96": 230000, "GW-FG98M": 330000}
 PRICE_INCREASE_FROM = date(YEAR, 7, 1)
 NON_B1 = ["PARTS", "ACCESSORIES", "CONTROLS", "FREIGHT"]
+# Relative spend by non-equipment category, mean 1.0 (fifth review V5: categories were equal). STRUCTURAL.
+NON_B1_WEIGHT = {"PARTS": 1.5, "ACCESSORIES": 0.8, "CONTROLS": 0.6, "FREIGHT": 1.1}
 
 PREFIX = ["Bren", "Calv", "Dorn", "Marv", "Holv", "Kelv", "Lisk", "Torv", "Wexl", "Brayl",
           "Fenw", "Garv", "Lomb", "Quen", "Rosk", "Ulst", "Vant", "Ober", "Nesh", "Thrav",
@@ -678,7 +680,31 @@ def unit_price(d, sku, when):
     return round(p)
 
 
+def _burn_legacy_return_draws(rng, d, carried, equip, q):
+    """Consume the main stream exactly as the pre-V1 return loop did, discarding the values.
+
+    Returns now come from a side stream. Keeping the old main-stream consumption means the
+    equipment, claims and statements stay byte-identical to the universe the fourth and fifth
+    reviews already checked; only returns and non-equipment lines change.
+    """
+    ret = 0
+    if rng.random() < 0.7:
+        target = equip * rng.uniform(0.005, 0.04)
+        for _ in range(40):
+            s = rng.choice(carried)
+            units = rng.randint(1, 6)
+            when = rand_business_day(rng, date(YEAR, 3 * (q - 1) + 1, 1),
+                                     date(YEAR, 3 * q, calendar.monthrange(YEAR, 3 * q)[1]))
+            amt = units * unit_price(d, s, when)
+            if ret + amt > target:
+                break
+            ret += amt
+
+
 def generate_volume(rng, distributors, claimed_units):
+    # Returns and non-equipment lines draw from their own seeded stream, so fixing them (fifth review
+    # V1, V5) does not reshuffle the equipment, claims or anything else.
+    side = random.Random(SEED + 1)
     lines, credits, baselines = [], [], []
     quarters = {}
     for d in distributors:
@@ -734,22 +760,27 @@ def generate_volume(rng, distributors, claimed_units):
                         units -= take
                 # Parts, accessories, controls and freight scale with the equipment bought (U1).
                 for when in invoices:
-                    for s in rng.sample(NON_B1, rng.randint(1, 4)):
-                        amt = round(month_equip * d["nonb1_share"] / n_inv / 2.5 * rng.uniform(0.3, 1.7))
+                    for _ in rng.sample(NON_B1, rng.randint(1, 4)):   # legacy main-stream draws, values unused
+                        rng.uniform(0.3, 1.7)
+                    for s in side.sample(NON_B1, side.randint(1, 4)):
+                        amt = round(month_equip * d["nonb1_share"] / n_inv / 2.5 * NON_B1_WEIGHT[s] * side.uniform(0.3, 1.7))
                         lines.append([did, when, s, 0, amt])
                         nonb1 += amt
             # Returns scale with volume too: 0.5-4% of the quarter's equipment, in whole units (U1).
+            _burn_legacy_return_draws(rng, d, carried, equip, q)
             ret = 0
-            if rng.random() < 0.7:
-                target = equip * rng.uniform(0.005, 0.04)
+            if side.random() < 0.7:
+                target = equip * side.uniform(0.005, 0.04)
                 for _ in range(40):
-                    s = rng.choice(carried)
-                    units = rng.randint(1, 6)
-                    when = rand_business_day(rng, date(YEAR, 3 * (q - 1) + 1, 1),
+                    if ret >= 0.6 * target:
+                        break
+                    s = side.choice(carried)
+                    units = side.randint(1, 3)
+                    when = rand_business_day(side, date(YEAR, 3 * (q - 1) + 1, 1),
                                              date(YEAR, 3 * q, calendar.monthrange(YEAR, 3 * q)[1]))
                     amt = units * unit_price(d, s, when)
                     if ret + amt > target:
-                        break
+                        continue          # this draw overshoots; try another (fifth review V1)
                     credits.append([did, when, s, units, amt])
                     ret += amt
             qual = equip - ret
