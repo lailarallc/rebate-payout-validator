@@ -19,7 +19,7 @@
 
 ## Open
 
-1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`. Note V4: underpaid now exceeds overpaid, but the headline still leads with overpaid, as the owner pinned.
+1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`. (V4 from the fifth review is moot after the V1 fix: overpaid, $17,597, again exceeds underpaid, $7,336.)
 2. **Before the public flip:**
    - a name and trademark screen ("Galewick" and the generated member names);
    - the real README;
