@@ -35,13 +35,14 @@ TIER_TAGS = {12: "C", 13: "O", 14: "C", 15: "O", 16: "C", 17: "C"}
 
 # Universe size (design gate, pinned)
 # Universe size: owner-sourced revision 2026-10-16 (DECISIONS) — program-year payout $500K-$1M.
-N_CONTRACTORS = 95
-N_SPIFF_BASE = 2_500           # clean claims before seeding; rate denominator
-N_DISTRIBUTORS = 60
+N_CONTRACTORS = 42
+N_SPIFF_BASE = 1_100           # clean claims before seeding; rate denominator
+N_DISTRIBUTORS = 20
 # Distributor sell-in is driven mostly by what enrolled contractors install (the claim floor
 # below); BASE_VOLUME_SCALE sizes the rest. Together they land sell-in near the approved ~$20M,
-# which is what the x0.15 tier-threshold scale (roll_parameters.py) is sized for.
+# which is what the x0.195 tier-threshold scale (roll_parameters.py) is sized for.
 BASE_VOLUME_SCALE = 0.05
+MIN_BASE_QUARTER = 40_000         # dollars; smallest stocking distributor's base quarter (T2)
 CORRECT_REJECT_SHARE = 0.115   # direction: ~13% rejection (Navigant 2013 Con Ed eval)
 
 YEAR = PARAMS["program_year"]
@@ -187,13 +188,21 @@ def make_distributors(rng):
     for i in range(N_DISTRIBUTORS):
         # Assortment: the three builder-grade units plus 3-6 eligible models (6-9 SKUs).
         carried = sorted(INELIGIBLE + rng.sample(eligible, rng.randint(3, 6)))
-        new = rng.random() < 0.06   # joined in late 2024: no 2024 same-quarter baseline (review R3)
+        # Base quarterly volume; a stocking distributor buys at least MIN_BASE_QUARTER a quarter, so
+        # draws below it are re-drawn (third review T2).
+        while True:
+            base = rng.lognormvariate(math.log(650_000 * BASE_VOLUME_SCALE), 0.75) * 100   # cents per quarter
+            if base >= MIN_BASE_QUARTER * 100:
+                break
+        # Joined in late 2024 (no 2024 same-quarter baseline, review R3). Only smaller distributors
+        # are new: a two-day-old member does not carry the largest installer base (T1).
+        new = base < 650_000 * BASE_VOLUME_SCALE * 100 and rng.random() < 0.12
         out.append({
             "distributor_id": f"D{i + 1:03d}",
             "name": f"{place(rng, used)} {rng.choice(DISTRIBUTOR_KIND)}",
             "enrollment_date": (rand_date(rng, date(YEAR - 1, 10, 1), date(YEAR - 1, 12, 31)) if new
                                 else rand_date(rng, date(2016, 1, 1), date(YEAR - 1, 9, 30))),
-            "base": rng.lognormvariate(math.log(650_000 * BASE_VOLUME_SCALE), 0.75) * 100,   # cents per quarter
+            "base": base,
             "discount": rng.uniform(0.88, 0.97),
             "growth": rng.gauss(1.03, 0.08),
             "assortment": carried,
@@ -670,13 +679,17 @@ def generate_volume(rng, distributors, claimed_units):
         did = d["distributor_id"]
         carried = d["assortment"]
         mix = {s: rng.uniform(0.5, 1.5) * (1.6 if s in INELIGIBLE else 1.0) for s in carried}
+        d_mult = rng.lognormvariate(math.log(3.0), 0.7)
         total_mix = sum(mix.values())
         # Annual units per SKU from the distributor's size, never below what its contractors claimed
         annual = {}
         for s in carried:
             fam_avg = sum(QUARTER_FACTOR[family(s)].values()) / 4
             units = d["base"] * 4 * fam_avg * mix[s] / total_mix / LIST_PRICE[s]
-            floor = math.ceil(claimed_units.get((did, s), 0) * rng.uniform(1.3, 2.5))
+            # Enrolled contractors are a minority of a distributor's buyers, and that share varies a lot
+            # from one distributor to the next (third review T1): a distributor-level multiple of claims
+            # (median 3, drawn once per distributor) with mild per-SKU noise.
+            floor = math.ceil(claimed_units.get((did, s), 0) * max(1.3, d_mult * rng.lognormvariate(0, 0.2)))
             annual[s] = max(round(units), floor)
         # Allocate each SKU's annual units to months exactly, by its family's seasonality.
         monthly = {}

@@ -73,3 +73,27 @@
   - **Deviation 2 (third review, T3):** closest-first made every boundary statement wrong and none right, a "perfect wall" an auditor would spot. #12 is now drawn from the 4n statements nearest a threshold (20 for n = 5), weighted 1/rank, without replacement. Clean boundary statements stay interleaved with the defective ones.
   - **What did not change:** the count (rate × base) and the defect's meaning, a tier flipped across the nearest threshold.
   - **Do not:** go back to a fixed-percentage window without checking that it holds at least 4n candidates at the current universe size.
+- **2026-10-22 — Second channel resize, so the realism tells T1/T2 can be fixed under the owner's $1M cap. Owner-approved; tier rates unchanged.**
+  - **Why the owner ruled:** Payout Math's audience is program sponsors, and both tells show within 30 seconds:
+    - T1: plotting sell-in against claims gives a straight line (r = 0.97);
+    - T2: 17 of 60 "stocking distributors" earn $0 all year.
+  - **Conflict found on paper:** fixing T1 adds sell-in, and every distributor above Tier 1 earns at least 1.75% of it. With 60 distributors, no threshold setting met ≤ $1M and zero $0-earners at the same time. Raising thresholds only created more $0-earners.
+
+    The owner chose a smaller channel over bent rates or a raised cap. Option 2, raising the cap, was rejected.
+  - **Solved by a dry-run projection**, using the generator's own arithmetic with nothing written, before the single regeneration.
+  - **Shape:**
+    - 1,100-claim rate base;
+    - 42 contractors;
+    - 20 distributors × 4 quarters;
+    - tier-threshold range ×1.3 (cumulative ×0.195 of v1.0, same draw index), giving T2 $63,375 / T3 $204,750 / T4 $409,500.
+  - **T1 fix:** the claim floor is now a distributor-level multiple of claims (lognormal, median 3, σ 0.7), with mild per-SKU noise. The first attempt used per-SKU noise only; it averaged out (projected r = 0.90–0.98) and was replaced.
+  - **T2 fix:** a stocking distributor's base quarter is at least $40K, with re-draws below that. Late-2024 joiners are drawn only from below-median distributors.
+  - **Result:** matches the projection to the cent.
+    - **$888,574.65 total**: $768,742 of rebates and $119,833 of install bonuses.
+    - Sell-in is $22.1M. The effective rebate rate is 3.48%.
+    - Correlation of sell-in with claims is r = 0.41; claimed units are 16% of units sold.
+    - 0 of 20 distributors earn $0. Tier occupancy is 13 / 36 / 25 / 6.
+    - Exact recovery, 129 of 129.
+  - **Class floor learned:** below 17 distributors (68 quarters), the O-rate tier classes (#13, #15) round to 0 cases. 20 distributors is the floor.
+  - **Owner-accepted cost:** 10 of 18 classes have fewer than 5 cases: the three R install-bonus classes and all six rebate classes. They exist in the data and the claims table, and the program view groups them under "Other".
+  - **Do not:** re-roll tier rates after seeing results. They are the original v1.0 draws.

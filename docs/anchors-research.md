@@ -141,3 +141,15 @@ defects are concentrated in the largest payments. No published source supports t
 **Not re-tuned** (pinned rule: no re-tuning if the verdict is undramatic). The failing bound is
 disclosed, not hidden. The cited 10–15% is a 2013 vendor press-release figure for high-tech OEMs,
 quoted second-hand. It is the weakest anchor in the file.
+
+---
+
+# Interpretation note — the 2–4% tier-rate band (2026-10-22, owner-confirmed)
+
+The cited 2–4% band (Hyperbots, vendor, illustrative) is read as applying to the **effective program rebate rate**: rebates paid
+÷ qualifying sell-in. Ours is **3.48%**. The individual tier rates deliberately bracket it, as real tier ladders do:
+1.75% (Tier 2), 3.25% (Tier 3), 5.25% incremental (Tier 4). The rates are the unchanged original v1.0 seeded draws. This note
+is interpretation, not adjustment.
+
+**Bound re-run after the second resize:** claim share 10.97% PASS; overpaid-dollar share 1.61% ($14,308 of $888,575) FAIL.
+Disclosed, not re-tuned.
