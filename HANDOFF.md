@@ -1,16 +1,41 @@
 # HANDOFF — rebate-payout-validator (Payout Math)
 
-**Phase:** copy freeze. The project is waiting on Max's audit before any deploy work starts.
+**Phase:** LIVE, waiting on Max's audit of the live site. The repo stays private until that audit passes.
 
-## Where it stands (2026-10-16)
+**Live:** https://payoutmath.lailarallc.com (also https://payoutmath.pages.dev)
 
-- **Rulebook v1.1** (`rules/`). Every parameter is a seeded draw from a stated range (distance by construction, see DECISIONS).
-- **Universe:** `scripts/generate_universe.py` produces one program year of Galewick data: 13,461 claims and 640 distributor-quarters. Generation is seed-locked and byte-stable.
-- **Validator:** `scripts/validate.py` reads only system data and recovers all 1,378 planted defects exactly.
-- **Bound check:** the claim-share bound passes at 11.2%. The overpaid-dollar bound fails at 2.3% against 10–15%; that is disclosed and was not re-tuned.
-- **Realism review:** an independent session wrote `docs/realism-review.md`. The first pass was FAIL with 17 findings, all fixed. The re-review was PASS WITH FINDINGS (R1–R7), all addressed.
-- **Web:** `web/` (SvelteKit static, frame v1.5.1) has three views: verdict, claims and program, plus a method section and the `/rules` page. It was checked at 1440px and 375px.
-- **Tests:** `python -I -m unittest discover -s tests` runs 12 tests, all passing.
+## Where it stands (2026-10-22)
+
+- **Universe:** resized by the owner (DECISIONS 2026-10-22).
+  - 95 contractors, a 2,500-claim rate base, and 60 distributors × 4 quarters.
+  - The tier-threshold range is scaled ×0.15 and base volume ×0.05.
+  - The program-year payout is **$835,060**, inside the owner's $500K–$1M band. Sell-in is about $22.5M.
+- **Rates:** all pinned rates are unchanged, and all 18 classes are present.
+- **Validator:** recovers all 303 planted defects exactly. `python -I -m unittest discover -s tests` passes all 12 tests.
+- **Bounds:** the claim-share bound passes (11.3%). The overpaid-dollar bound fails (3.5% against 10–15%); that is disclosed and was not re-tuned.
+- **Realism reviews** (`docs/realism-review.md`):
+  - First pass: FAIL, 17 findings, all fixed.
+  - Second pass: PASS WITH FINDINGS, R1–R7 all fixed.
+  - Third pass, after the resize: PASS WITH FINDINGS. T3, T4 and T5 are fixed.
+- **Deploy:** `.github/workflows/deploy.yml` runs four jobs, with all actions SHA-pinned:
+  - verify: the stdlib tests plus a check that committed artifacts are current;
+  - build: `web/`;
+  - deploy: the org `pages-deploy@v1`, project `payoutmath`;
+  - domain: an idempotent attach plus the CNAME.
+- **OG card:** `lailarallc.com/og/s/payoutmath.png` is live, from `lailara-website@f8890da`.
+
+## Open
+
+1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`.
+2. **T1 and T2 need the owner's call** (third review):
+   - sell-in tracks claims at r = 0.97;
+   - micro-distributors that buy a unit a quarter.
+
+   Both fixes raise sell-in, so they risk the $1M cap.
+3. **Before the public flip:**
+   - a name and trademark screen;
+   - the real README from the template;
+   - pre-ship checks.
 
 ## Pipeline
 
@@ -24,8 +49,4 @@ python -I scripts/build_site_data.py
 npm --prefix web run build
 ```
 
-## Next
-
-1. Max audits the copy (`docs/copy-freeze.md`, judgment calls J1–J8).
-2. Apply the audit edits.
-3. Work the pre-deploy checklist in `docs/copy-freeze.md`.
+Commit the regenerated artifacts. CI refuses to deploy if they are stale.
