@@ -84,8 +84,12 @@ jobs:
           if api "$base/accounts/$CF_ACCOUNT_ID/pages/projects/$PROJECT/domains" | grep -q "\"name\":\"$DOMAIN\""; then
             echo "domain already attached"
           else
-            api -X POST "$base/accounts/$CF_ACCOUNT_ID/pages/projects/$PROJECT/domains" --data "{\"name\":\"$DOMAIN\"}" \
-              | grep -q '"success":true' && echo "domain attached" || { echo "::warning::could not attach domain"; exit 1; }
+            resp=$(api -X POST "$base/accounts/$CF_ACCOUNT_ID/pages/projects/$PROJECT/domains" --data "{\"name\":\"$DOMAIN\"}")
+            if printf '%s' "$resp" | grep -q '"success":true'; then echo "domain attached"; else
+              # print only the API's error codes and messages (never the token)
+              printf '%s' "$resp" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("::warning::could not attach domain:", [(e.get("code"), e.get("message")) for e in d.get("errors", [])])'
+              exit 1
+            fi
           fi
           zone=$(api "$base/zones?name=lailarallc.com" | python3 -c 'import sys,json; r=json.load(sys.stdin)["result"]; print(r[0]["id"] if r else "")')
           [ -n "$zone" ] || { echo "::warning::zone not visible to token"; exit 1; }
