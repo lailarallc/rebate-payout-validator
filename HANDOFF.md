@@ -4,37 +4,25 @@
 
 **Live:** https://payoutmath.lailarallc.com (also https://payoutmath.pages.dev)
 
-## Where it stands (2026-10-22)
+## Where it stands (2026-10-22, ccdcea3)
 
-- **Universe:** resized by the owner (DECISIONS 2026-10-22).
-  - 95 contractors, a 2,500-claim rate base, and 60 distributors × 4 quarters.
-  - The tier-threshold range is scaled ×0.15 and base volume ×0.05.
-  - The program-year payout is **$835,060**, inside the owner's $500K–$1M band. Sell-in is about $22.5M.
-- **Rates:** all pinned rates are unchanged, and all 18 classes are present.
-- **Validator:** recovers all 303 planted defects exactly. `python -I -m unittest discover -s tests` passes all 12 tests.
-- **Bounds:** the claim-share bound passes (11.3%). The overpaid-dollar bound fails (3.5% against 10–15%); that is disclosed and was not re-tuned.
-- **Realism reviews** (`docs/realism-review.md`):
-  - First pass: FAIL, 17 findings, all fixed.
-  - Second pass: PASS WITH FINDINGS, R1–R7 all fixed.
-  - Third pass, after the resize: PASS WITH FINDINGS. T3, T4 and T5 are fixed.
-- **Deploy:** `.github/workflows/deploy.yml` runs four jobs, with all actions SHA-pinned:
-  - verify: the stdlib tests plus a check that committed artifacts are current;
-  - build: `web/`;
-  - deploy: the org `pages-deploy@v1`, project `payoutmath`;
-  - domain: an idempotent attach plus the CNAME.
-- **OG card:** `lailarallc.com/og/s/payoutmath.png` is live, from `lailara-website@f8890da`.
+- **Universe** (owner-approved channel; DECISIONS):
+  - 42 contractors, a 1,100-claim rate base, and 20 distributors × 4 quarters.
+  - Tier thresholds are T2 $50,700 / T3 $163,800 / T4 $327,600. The rates are unchanged original draws.
+  - **Payout $521,804**: $401,971 of rebates plus $119,833 of install bonuses.
+  - Sell-in is $13.99M, and the effective rebate rate is 2.87%.
+  - 0 distributors earn $0, and the largest distributor is 10.5% of sell-in.
+- **Validator:** recovers all 129 planted defects exactly. All 18 classes exist; 9 are ranked on the page and 9 are grouped as "Other", by program. `python -I -m unittest discover -s tests` passes all 12 tests.
+- **Bounds:** the claim-share bound passes (11.0%). The overpaid-dollar bound fails (3.4% against 10–15%); that is disclosed and was not re-tuned.
+- **Realism reviews** (`docs/realism-review.md`): five passes. The fourth and fifth were PASS WITH FINDINGS; every finding is fixed or recorded as accepted (U6 and V2 accepted, V4 noted).
+- **Deploy:** live at https://payoutmath.lailarallc.com, with all four CI jobs green. The OG card is live.
 
 ## Open
 
-1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`.
-2. **T1 and T2 need the owner's call** (third review):
-   - sell-in tracks claims at r = 0.97;
-   - micro-distributors that buy a unit a quarter.
-
-   Both fixes raise sell-in, so they risk the $1M cap.
-3. **Before the public flip:**
-   - a name and trademark screen;
-   - the real README from the template;
+1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`. Note V4: underpaid now exceeds overpaid, but the headline still leads with overpaid, as the owner pinned.
+2. **Before the public flip:**
+   - a name and trademark screen ("Galewick" and the generated member names);
+   - the real README;
    - pre-ship checks.
 
 ## Pipeline
