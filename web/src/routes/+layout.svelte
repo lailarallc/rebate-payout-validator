@@ -17,7 +17,7 @@
 
 	<footer class="lailara-footer">
 		<div class="lailara-footer-inner">
-			<p>Built by <a href="https://lailarallc.com" target="_blank" rel="noopener">Lailara LLC</a> — data hygiene and analytics consulting for specialty food brands scaling into national retail.</p>
+			<p>Built by <a href="https://lailarallc.com" target="_blank" rel="noopener">Lailara LLC</a> — data hygiene and process hygiene across CPG retail and deduction data, campaign and web analytics, and rebate and incentive payouts.</p>
 			<p class="lailara-footer-note">
 				Galewick Climate Systems is invented. Every claim, contractor, distributor, and rule on this site is synthetic; the method is real.
 			</p>

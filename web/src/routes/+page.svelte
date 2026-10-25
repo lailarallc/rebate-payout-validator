@@ -126,6 +126,7 @@
 
 <svelte:head>
 	<title>Payout Math — Lailara LLC</title>
+	<link rel="canonical" href="https://payoutmath.lailarallc.com/" />
 </svelte:head>
 
 <div class="lailara-container">
@@ -379,6 +380,22 @@
 				{#if b.result !== 'PASS'}The error rates were not adjusted to close the gap.{/if}
 			</p>
 		{/each}
+	</div>
+</section>
+
+<!-- ============================================================ ENGAGEMENT -->
+<section class="view" id="engagement" aria-labelledby="engagement-title">
+	<div class="ll-column">
+		<h2 id="engagement-title" class="ll-section-title">What this looks like on your program</h2>
+		<p class="body">
+			The engagement version runs this same validation on your program: your published rules, your claims
+			and statement exports, every payout re-derived and every exception shown with the rule it breaks and
+			the dollars attached. The data here is synthetic; the method is not — and your program's rules are
+			already written. The question is whether your payouts follow them.
+		</p>
+		<p class="body">
+			<a href="https://lailarallc.com/contact">Run this on your program &rarr;</a>
+		</p>
 	</div>
 </section>
 </div>
