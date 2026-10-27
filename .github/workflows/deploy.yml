@@ -28,7 +28,7 @@ jobs:
       - name: Rebuild twice and run the tests (stdlib only)
         run: python -I -m unittest discover -s tests -v
       - name: Committed artifacts match the pipeline
-        run: git diff --exit-code -- data build rules web/src/lib/data web/static/data web/static/rules
+        run: git diff --exit-code -- data build rules web/src/lib/data web/static/data web/static/rules README.md
 
   build:
     name: Build the static site

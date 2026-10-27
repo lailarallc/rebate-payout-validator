@@ -14,11 +14,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ["roll_parameters.py", "render_rules.py", "generate_universe.py", "validate.py", "bound_check.py",
-           "build_site_data.py"]
+           "build_site_data.py", "build_readme.py"]
 ARTIFACTS = sorted([*ROOT.glob("data/*.csv"), ROOT / "rules" / "parameters.json",
                     ROOT / "rules" / "galewick-program-rules.md", ROOT / "build" / "results.json",
                     ROOT / "build" / "bound_check.json", ROOT / "web" / "src" / "lib" / "data" / "summary.json",
-                    ROOT / "web" / "src" / "lib" / "data" / "rules.html", ROOT / "web" / "static" / "data" / "flagged.json"])
+                    ROOT / "web" / "src" / "lib" / "data" / "rules.html", ROOT / "web" / "static" / "data" / "flagged.json",
+                    ROOT / "README.md"])
 
 
 def run_pipeline():
@@ -118,6 +119,21 @@ class Pipeline(unittest.TestCase):
         flagged = json.loads((ROOT / "web" / "static" / "data" / "flagged.json").read_text(encoding="utf-8"))
         self.assertEqual(len(flagged), self.results["verdict"]["flagged_records"])
         self.assertEqual(sum(f["d"] for f in flagged if f["d"] > 0), self.results["verdict"]["over_cents"])
+
+    def test_readme_has_no_hand_entered_numbers(self):
+        """Every digit in README.md sits inside a generated block (scripts/build_readme.py)."""
+        import re
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        blocks = re.findall(r"<!-- generated:(\w+):begin -->", text)
+        self.assertEqual(sorted(blocks), ["findings", "stack"])
+        outside = re.sub(r"<!-- generated:(\w+):begin -->.*?<!-- generated:\1:end -->", "", text, flags=re.S)
+        self.assertEqual(re.findall(r"\d", outside), [])
+
+    def test_readme_verdict_matches_results(self):
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        v = self.results["verdict"]
+        for cents in (v["over_cents"], v["under_cents"], v["approved_cents"]):
+            self.assertIn(f"${round(cents / 100):,}", text)
 
     def test_rulebook_has_no_unrendered_placeholder(self):
         self.assertNotIn("{{", (ROOT / "rules" / "galewick-program-rules.md").read_text(encoding="utf-8"))

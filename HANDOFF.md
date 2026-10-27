@@ -1,6 +1,6 @@
 # HANDOFF — rebate-payout-validator (Payout Math)
 
-**Phase:** LIVE, waiting on Max's audit of the live site. The repo stays private until that audit passes.
+**Phase:** LIVE. **Max's audit signed off 2026-10-27:** the arithmetic is exact, the bounds are disclosed honestly, and his three audit fixes (68d2275: three-lane footer, engagement section, per-page canonicals) are verified live. Pre-flip items are in progress. The public flip remains the owner's word.
 
 **Live:** https://payoutmath.lailarallc.com (also https://payoutmath.pages.dev)
 
@@ -19,7 +19,7 @@
 
 ## Open
 
-1. **Max audits the live site.** The judgment calls are J1–J8 in `docs/copy-freeze.md`. (V4 from the fifth review is moot after the V1 fix: overpaid, $17,597, again exceeds underpaid, $7,336.)
+1. ~~Max audits the live site~~: **signed off 2026-10-27.**
 2. **Before the public flip:**
    - a name and trademark screen ("Galewick" and the generated member names);
    - the real README;
