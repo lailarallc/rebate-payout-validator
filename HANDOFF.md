@@ -1,6 +1,6 @@
 # HANDOFF — rebate-payout-validator (Payout Math)
 
-**Phase:** LIVE. **Max's audit signed off 2026-10-27:** the arithmetic is exact, the bounds are disclosed honestly, and his three audit fixes (68d2275: three-lane footer, engagement section, per-page canonicals) are verified live. Pre-flip items are in progress. The public flip remains the owner's word.
+**Phase:** LIVE. **Max's audit signed off 2026-10-27:** the arithmetic is exact, the bounds are disclosed honestly, and his three audit fixes (68d2275: three-lane footer, engagement section, per-page canonicals) are verified live. The repo has been public since 2026-11-02.
 
 **Live:** https://payoutmath.lailarallc.com (also https://payoutmath.pages.dev)
 
@@ -24,7 +24,7 @@
    - Name screen: CLEAR WITH NEAR-MISSES (`docs/name-screen.md`). Galewick is clear. "Pennridge HVAC" was renamed **"Alvandale HVAC"** (owner ruling, 2026-11-02). The replacement screened clear. Brenwyn is a LOW near-miss and is kept.
    - Real README: done. Numbers are artifact-fed, enforced by tests and CI.
    - Pre-ship: READY. A fresh clone runs the full pipeline with zero diff, all 14 tests pass, `npm ci` and the build succeed, no secrets appear in tracked files or history, and `.gitignore` covers secrets.
-3. **Public flip:** the owner's word.
+3. **Public flip: done 2026-11-02.** The owner confirmed at the `/publish` prompt. https://github.com/lailarallc/rebate-payout-validator is PUBLIC.
 
 ## Pipeline
 

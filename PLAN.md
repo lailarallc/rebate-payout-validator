@@ -18,7 +18,7 @@ _Confirmed by owner 2026-10-15 via /clarify. Full record: [docs/clarify-log.md](
 
 Items 1–4 of the original arc are done: rulebook (v1.1), generator, bound check, and realism gates (five adversarial reviews). The tool is live, Max's audit is signed off (2026-10-27), and the code review (2026-11-02) is done.
 
-1. Public flip (`/publish`). The owner has authorized it.
+1. ~~Public flip~~: done 2026-11-02.
 2. Then stable maintenance only: re-run `/improve` on the next-review date in the Improvement History below.
 
 ## Improvement History
