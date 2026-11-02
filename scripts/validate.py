@@ -162,7 +162,7 @@ def validate_claims():
         if paid > earned:
             present.update(v)
         if model in ELIGIBLE and paid > 0:
-            if paid != full and paid != full * PARTIAL_PCT // 100:
+            if paid != full and not (partial and paid == full * PARTIAL_PCT // 100):
                 if paid in ALL_TABLE_AMOUNTS:
                     present[9] = f"Paid {money(paid)}; Table A1 amount for {model} on {inst} is {money(full)}"
                 else:
@@ -218,7 +218,8 @@ def validate_statements():
         bl_used = int(s["baseline_used_cents"]) if s["baseline_used_cents"] else None
         paid = int(s["total_paid_cents"])
         # statement must be internally consistent: its fields reproduce its own amount
-        assert paid_rebate(basis, t_app, meth if t_app > 1 else "retroactive") + growth_cents(basis, bl_used) == paid, k
+        if paid_rebate(basis, t_app, meth if t_app > 1 else "retroactive") + growth_cents(basis, bl_used) != paid:
+            raise SystemExit(f"statement {k} is not internally consistent: its fields do not reproduce its amount")
 
         q = qual[k]
         tier = tier_for(q)
@@ -289,8 +290,8 @@ def main():
             "over_cents": sum(f["delta_cents"] for f in prim if f["delta_cents"] > 0),
             "under_cents": -sum(f["delta_cents"] for f in prim if f["delta_cents"] < 0),
         })
-    assert sum(x["over_cents"] for x in classes) == over
-    assert sum(x["under_cents"] for x in classes) == under
+    if sum(x["over_cents"] for x in classes) != over or sum(x["under_cents"] for x in classes) != under:
+        raise SystemExit("primary-class dollars do not sum to the verdict")
 
     fam_totals = {}
     for fam, paid in (("spiff", paid_a), ("tier", paid_b)):
@@ -300,6 +301,7 @@ def main():
             "over_cents": sum(f["delta_cents"] for f in fs if f["delta_cents"] > 0),
             "under_cents": -sum(f["delta_cents"] for f in fs if f["delta_cents"] < 0),
             "flagged_records": len(fs),
+            "flagged_paid_records": sum(1 for f in fs if f["paid_cents"] > 0),
         }
 
     result = {

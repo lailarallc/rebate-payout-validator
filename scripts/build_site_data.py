@@ -14,6 +14,7 @@ import html
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -21,6 +22,8 @@ RESULTS = json.loads((ROOT / "build" / "results.json").read_text(encoding="utf-8
 BOUNDS = json.loads((ROOT / "build" / "bound_check.json").read_text(encoding="utf-8"))
 PARAMS = json.loads((ROOT / "rules" / "parameters.json").read_text(encoding="utf-8"))
 WEB = ROOT / "web"
+sys.path.insert(0, str(ROOT / "scripts"))
+from render_rules import VERSION as RULES_VERSION  # noqa: E402
 
 MIN_DISPLAY = 5  # fleet 5-per-bucket floor: smaller classes are grouped into "other"
 
@@ -46,7 +49,7 @@ def summary():
         "precedence": RESULTS["precedence"],
         "bounds": BOUNDS["bounds"],
         "min_display": MIN_DISPLAY,
-        "rules_version": "1.1",
+        "rules_version": RULES_VERSION,
         "params": {k: PARAMS[k] for k in ("filing_deadline_days", "late_doc_grace_days", "late_doc_partial_pct",
                                           "claim_processing_days", "program_year")},
     }

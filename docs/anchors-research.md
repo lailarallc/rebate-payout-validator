@@ -159,3 +159,7 @@ Disclosed, not re-tuned.
 
 **Bound re-run after the fifth-review fixes (2026-10-22):** claim share 10.97% PASS; overpaid-dollar share 3.37% ($17,597 of
 $521,804) FAIL. Disclosed, not re-tuned. Effective rebate rate is 2.87% of sell-in.
+
+**Definition fix from the pre-publication code review (2026-11-02):** the claim-share numerator now counts only flagged claims that
+were paid, matching the paid-claims denominator. The result moves from 11.0% to 8.76% and still PASSES; this is not a tune. The
+overpaid-dollar share is unchanged at 3.37% and still FAILS; it is disclosed and was not re-tuned.

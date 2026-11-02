@@ -32,7 +32,8 @@ BOUNDS = [
 
 def main():
     r = json.loads(RESULTS.read_text(encoding="utf-8"))
-    spiff_flagged = r["families"]["spiff"]["flagged_records"]
+    # Numerator and denominator are the same population: paid claims (code review 2026-11-02).
+    spiff_flagged = r["families"]["spiff"]["flagged_paid_records"]
     measured = {
         "spiff_claim_share": (spiff_flagged, r["universe"]["paid_claims"]),
         "overpaid_dollar_share": (r["verdict"]["over_cents"], r["verdict"]["approved_cents"]),

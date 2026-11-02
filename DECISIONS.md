@@ -136,3 +136,30 @@
   - **Why:** the screen flagged "Pennridge" MED. It is a real place (Bucks County, PA) and an unrelated live USPTO mark exists. Distance from real names is free, and keeping a flagged name buys nothing.
   - **How:** the main random stream is untouched. A name in `SCREENED_OUT` is replaced from a side stream (`SEED + 2`) that rejects anything within one edit of a screened name. Only that one name changed in the rebuild.
   - **Do not:** add a name to `SCREENED_OUT` without re-running the screen on its replacement, and record it in `docs/name-screen.md`.
+- **2026-11-02 — Pre-publication code review (`/ce:code-review`, nine reviewers). Findings fixed; decided under the fork policy, flagged for Max.**
+  - **Golden values (#1, P2).** The validator borrows its rule arithmetic from the generator, so exact recovery could never catch a shared rule-math bug. Changing `>=` to `>` against B4.1 left every test green. `tests/test_pipeline.py` `RuleArithmetic` now checks rulebook v1.1 values computed by hand, at each boundary:
+    - the tier threshold equality;
+    - the Tier 2, Tier 3 and Tier 4 split;
+    - growth at exactly 113%;
+    - the spring rate ending April 30, cooling only;
+    - the A8 partial at 25%.
+
+    A mutation check confirmed the `>=` → `>` bug now fails the suite.
+  - **Claim-share bound definition (#2, P2).** The numerator counted flagged claims that were paid $0, against a paid-claims denominator. It now counts flagged claims with `paid_cents > 0` (`families.spiff.flagged_paid_records`). The published figure moves from 11.0% to **8.76%**, still PASS.
+
+    This is a definition fix found in review, not a tune: the population on both sides is now the same, and the result happens to stay inside the band.
+  - **Behavioural planted-truth test (#3).** The old test only grepped the source. The new test hides `data/planted.csv`, re-runs the validator, and requires byte-identical results.
+  - **CI (#4).** The stale-artifact gate now also fails on uncommitted new generated files, using `git status --porcelain`.
+  - **Smaller fixes:**
+    - #5: A8.3 exempts a 25% payment only when A8.2 actually applies.
+    - #6: the README bound wording now follows PASS/FAIL.
+    - #7: `n_for` floors at one case. No count changed.
+    - #8: `rules_version` is imported, not hard-coded.
+    - #9: integrity checks raise `SystemExit` rather than `assert`.
+    - #10: test hygiene.
+    - #11: the README lists the machine-readable outputs and the full Stack.
+  - **Not changed:**
+    - The orphaned pre-rewrite commit: an owner decision, 2026-10-16.
+    - The reusable workflow pinned at `@v1` with `secrets: inherit`: a fleet-wide pattern, not a per-repo call.
+    - Within-record netting of stacked #13/#15 onto basis defects: latent, with 0 such records today. It is recorded as a residual risk.
+    - An A8 claim paid in full has no defect class and would raise "unexplained difference": latent, with 0 cases. It is recorded.

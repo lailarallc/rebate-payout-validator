@@ -159,7 +159,7 @@ def amount_cents(model, d):
 
 
 def n_for(tag, base):
-    return round(RATE[tag] * base)
+    return max(1, round(RATE[tag] * base))   # every class exists: at least one case
 
 
 def place(rng, used):

@@ -29,6 +29,10 @@ jobs:
         run: python -I -m unittest discover -s tests -v
       - name: Committed artifacts match the pipeline
         run: git diff --exit-code -- data build rules web/src/lib/data web/static/data web/static/rules README.md
+      - name: No new generated files left uncommitted
+        run: |
+          left=$(git status --porcelain -- data build rules web/src/lib/data web/static/data web/static/rules README.md)
+          if [ -n "$left" ]; then echo "$left"; echo "::error::generated files are not committed"; exit 1; fi
 
   build:
     name: Build the static site

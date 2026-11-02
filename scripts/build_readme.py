@@ -34,6 +34,10 @@ def usd(cents):
     return f"${round(cents / 100):,}"
 
 
+def side(bound):
+    return "inside" if bound["result"] == "PASS" else "outside"
+
+
 def findings():
     r, b, s, p = load("build/results.json"), load("build/bound_check.json"), load("web/src/lib/data/summary.json"), load("rules/parameters.json")
     v, u, fam = r["verdict"], r["universe"], r["families"]
@@ -58,10 +62,11 @@ def findings():
         f"- The channel: {len(rows('data/contractors.csv'))} contractors, {len(rows('data/distributors.csv'))} "
         f"distributors, {usd(sellin)} of equipment sell-in. Rulebook v{RULES_VERSION}, with tiers at "
         f"{usd(100 * t[1]['threshold_usd'])} / {usd(100 * t[2]['threshold_usd'])} / {usd(100 * t[3]['threshold_usd'])} a quarter.",
-        f"- Defect share of paid install-bonus claims: {cs['measured_bp'] / 100:.1f}%, inside the "
+        f"- Defect share of paid install-bonus claims: {cs['measured_bp'] / 100:.1f}%, {side(cs)} the "
         f"{cs['low_bp'] // 100}–{cs['high_bp'] // 100}% a rebate-audit vendor reports. Overpaid dollars as a share of "
-        f"approved: {ds['measured_bp'] / 100:.1f}%, outside the {ds['low_bp'] // 100}–{ds['high_bp'] // 100}% of a "
-        "2013 vendor press release. The gap is disclosed; error rates were not tuned to close it.",
+        f"approved: {ds['measured_bp'] / 100:.1f}%, {side(ds)} the {ds['low_bp'] // 100}–{ds['high_bp'] // 100}% of a "
+        "2013 vendor press release."
+        + ("" if all(x["result"] == "PASS" for x in (cs, ds)) else " The gap is disclosed; error rates were not tuned to close it."),
     ])
 
 
@@ -74,7 +79,8 @@ def stack():
     return "\n".join([
         f"- Python {py}, standard library only: generator, validator, bound check, site data, tests.",
         f"- SvelteKit static site: `@sveltejs/kit` {pkg['@sveltejs/kit']}, `svelte` {pkg['svelte']}, "
-        f"`@sveltejs/adapter-static` {pkg['@sveltejs/adapter-static']}, `vite` {pkg['vite']}.",
+        f"`@sveltejs/adapter-static` {pkg['@sveltejs/adapter-static']}, `@sveltejs/vite-plugin-svelte` "
+        f"{pkg['@sveltejs/vite-plugin-svelte']}, `vite` {pkg['vite']}.",
         f"- Lailara frame v{frame}, vendored in `web/static/lailara/`.",
         f"- Cloudflare Pages, deployed by `{reusable}` after a CI job re-runs the pipeline and refuses stale artifacts.",
     ])

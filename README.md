@@ -18,7 +18,7 @@ and what was earned but never paid, at the same size, never netted.
 - 129 payout decisions break a rule: 119 claims and 10 rebate statements. 16 break more than one.
 - The validator recovers all 129 planted defects and flags nothing else. All 18 defect classes are present; 9 have enough cases to be ranked on the page, and the rest are grouped by program.
 - The channel: 42 contractors, 20 distributors, $13,990,157 of equipment sell-in. Rulebook v1.1, with tiers at $50,700 / $163,800 / $327,600 a quarter.
-- Defect share of paid install-bonus claims: 11.0%, inside the 6–15% a rebate-audit vendor reports. Overpaid dollars as a share of approved: 3.4%, outside the 10–15% of a 2013 vendor press release. The gap is disclosed; error rates were not tuned to close it.
+- Defect share of paid install-bonus claims: 8.8%, inside the 6–15% a rebate-audit vendor reports. Overpaid dollars as a share of approved: 3.4%, outside the 10–15% of a 2013 vendor press release. The gap is disclosed; error rates were not tuned to close it.
 <!-- generated:findings:end -->
 
 Galewick Climate Systems is an invented HVAC manufacturer. Its contractors, distributors, claims,
@@ -40,11 +40,24 @@ and can be checked by hand against the [published rules](https://payoutmath.lail
 Design decisions, realism reviews, and anchors: [DECISIONS.md](DECISIONS.md),
 [docs/realism-review.md](docs/realism-review.md), [docs/anchors-research.md](docs/anchors-research.md).
 
+## Machine-readable outputs
+
+The live site serves its data as files, so the page is not the only way in:
+
+- `/data/flagged.json`: every payout decision that breaks a rule. The keys are `id` (claim or
+  statement), `t` (`c` claim, `s` statement), `m` and `n` (member id and name), `p` (paid cents),
+  `e` (earned cents), `d` (difference in cents, positive when overpaid), `k` (every defect class
+  broken), `pk` (the primary class), `ev` (evidence for each class in `k`, in order).
+- `/rules/galewick-program-rules.md`: the published rulebook as plain text.
+- In the repo: `build/results.json` (verdict, classes, every flagged record with full evidence),
+  `build/bound_check.json`, and the program's system data in `data/`. The planted defects
+  (`data/planted.csv`) exist for the tests; the validator never reads them.
+
 ## Stack
 
 <!-- generated:stack:begin -->
 - Python 3.13, standard library only: generator, validator, bound check, site data, tests.
-- SvelteKit static site: `@sveltejs/kit` ^2.70.3, `svelte` ^5.56.10, `@sveltejs/adapter-static` ^3.0.10, `vite` ^8.2.2.
+- SvelteKit static site: `@sveltejs/kit` ^2.70.3, `svelte` ^5.56.10, `@sveltejs/adapter-static` ^3.0.10, `@sveltejs/vite-plugin-svelte` ^7.3.0, `vite` ^8.2.2.
 - Lailara frame v1.5.1, vendored in `web/static/lailara/`.
 - Cloudflare Pages, deployed by `lailarallc/reusable-workflows/.github/workflows/pages-deploy.yml@v1` after a CI job re-runs the pipeline and refuses stale artifacts.
 <!-- generated:stack:end -->
