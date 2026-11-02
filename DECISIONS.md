@@ -132,3 +132,7 @@
   - **V2, accepted.** The entry tier is a stocking hurdle that every enrolled distributor is expected to clear: T2 is $50,700 against a $40K minimum base quarter, so Tier 1 holds only the odd slow quarter. Lowering the minimum base would cost payout margin against the $500K floor.
   - **V3.** The verdict footnote now points readers to the claims table, filtered to the rebate program, to see the grouped rebate rules one by one.
   - **V4, noted for the owner.** Underpaid ($7,336) and overpaid ($17,597) have traded places over the resizes. The headline still leads with overpaid, as pinned.
+- **2026-11-02 — "Pennridge HVAC" renamed "Alvandale HVAC" after the name screen. Owner ruling.**
+  - **Why:** the screen flagged "Pennridge" MED. It is a real place (Bucks County, PA) and an unrelated live USPTO mark exists. Distance from real names is free, and keeping a flagged name buys nothing.
+  - **How:** the main random stream is untouched. A name in `SCREENED_OUT` is replaced from a side stream (`SEED + 2`) that rejects anything within one edit of a screened name. Only that one name changed in the rebuild.
+  - **Do not:** add a name to `SCREENED_OUT` without re-running the screen on its replacement, and record it in `docs/name-screen.md`.

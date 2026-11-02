@@ -20,3 +20,12 @@
 - Justia was blocked (403).
 - Member names were screened by stem, mostly in grouped queries.
 - Not checked at all: state business registries, contractor-license databases, Companies House, Canadian registries, and domain names.
+
+## Rename (2026-11-02)
+
+- **What changed:** "Pennridge HVAC" (C0030) became **"Alvandale HVAC"**. The owner ruled that distance is free and keeping a flagged name buys nothing.
+- **How the replacement was drawn:** from the generator's own stem pool, via a separate seeded stream (`SEED + 2`). Any candidate within one edit of a screened name (Pennridge, Brenwyn, Branwyn, Brangwyn) was rejected.
+- **Screen of "Alvandale": CLEAR.**
+  - USPTO wordmark search: "alvandale", "alvandale*" and "alvandal" each returned 0.
+  - Web exact phrase: no business or place by the name. The nearest are Avondale (AZ) and Annandale (MN), two edits away and no name match.
+- **Rebuild:** diff-clean apart from the name. `build/results.json` and `flagged.json` are identical to the previous build except for the two Pennridge occurrences, and every total is unchanged.

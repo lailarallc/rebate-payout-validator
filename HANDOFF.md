@@ -21,7 +21,7 @@
 
 1. ~~Max audits the live site~~: **signed off 2026-10-27.**
 2. **Pre-flip items, done 2026-10-27:**
-   - Name screen: CLEAR WITH NEAR-MISSES (`docs/name-screen.md`). Galewick is clear. **Owner call:** keep or rename "Pennridge HVAC" (MED: real place name, and an unrelated USPTO mark exists). Brenwyn is a LOW near-miss.
+   - Name screen: CLEAR WITH NEAR-MISSES (`docs/name-screen.md`). Galewick is clear. "Pennridge HVAC" was renamed **"Alvandale HVAC"** (owner ruling, 2026-11-02). The replacement screened clear. Brenwyn is a LOW near-miss and is kept.
    - Real README: done. Numbers are artifact-fed, enforced by tests and CI.
    - Pre-ship: READY. A fresh clone runs the full pipeline with zero diff, all 14 tests pass, `npm ci` and the build succeed, no secrets appear in tracked files or history, and `.gitignore` covers secrets.
 3. **Public flip:** the owner's word.

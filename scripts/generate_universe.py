@@ -173,8 +173,45 @@ def place(rng, used):
                 or pre[-1].lower() == suf[0] or ("q" in low and "qu" not in low)):
             continue
         if name not in used:
+            if name in SCREENED_OUT:
+                # Replaced from a side stream, so the main stream (and every other draw) is unchanged.
+                name = _rescreen_name(used)
             used.add(name)
             return name
+
+
+# Names removed by the pre-publication name screen (docs/name-screen.md). "Pennridge" is a real
+# place with an unrelated USPTO mark. A replacement must not be within one edit of any screened
+# name, which also rules out the near-misses "Branwyn" and "Brangwyn".
+SCREENED_OUT = {"Pennridge"}
+SCREENED_NEAR = {"Pennridge", "Brenwyn", "Branwyn", "Brangwyn"}
+_NAME_RNG = random.Random(SEED + 2)
+
+
+def _within_one_edit(a, b):
+    a, b = a.lower(), b.lower()
+    if abs(len(a) - len(b)) > 1:
+        return False
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i] + [0] * len(b)
+        for j, cb in enumerate(b, 1):
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb))
+        prev = cur
+    return prev[-1] <= 1
+
+
+def _rescreen_name(used):
+    while True:
+        pre, suf = _NAME_RNG.choice(PREFIX), _NAME_RNG.choice(SUFFIX)
+        name = pre + suf
+        low = name.lower()
+        if (any(low[i] == low[i + 1] == low[i + 2] for i in range(len(low) - 2))
+                or pre[-1].lower() == suf[0] or ("q" in low and "qu" not in low)):
+            continue
+        if name in used or any(_within_one_edit(name, s) for s in SCREENED_NEAR):
+            continue
+        return name
 
 
 def active_on(c, d):
