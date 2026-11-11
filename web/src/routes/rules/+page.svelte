@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>Galewick program rules — Payout Math — Lailara LLC</title>
+	<title>Galewick program rules | Payout Math | Lailara LLC</title>
 	<meta name="description" content="The published 2025 program rules Payout Math validates every Galewick payout against." />
 	<link rel="canonical" href="https://payoutmath.lailarallc.com/rules" />
 </svelte:head>
