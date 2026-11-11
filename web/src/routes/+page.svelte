@@ -125,7 +125,7 @@
 </script>
 
 <svelte:head>
-	<title>Payout Math — Lailara LLC</title>
+	<title>Payout Math | Lailara LLC</title>
 	<link rel="canonical" href="https://payoutmath.lailarallc.com/" />
 </svelte:head>
 
@@ -147,7 +147,7 @@
 			distributor rebate statements in its {S.params.program_year} program. Payout Math re-derived every one from the
 			<a href="/rules">published program rules</a>. {count(v.flagged_records)} payout decisions were wrong:
 			{count(fam.spiff.flagged_records)} on install-bonus claims and {count(fam.tier.flagged_records)} on rebate
-			statements. Overpayments and underpayments are counted separately and never netted — a contractor
+			statements. Overpayments and underpayments are counted separately and never netted. A contractor
 			who was underpaid is not made whole by another contractor's overpayment.
 		</p>
 	</div>
@@ -159,11 +159,11 @@
 		</div>
 		<div class="stat">
 			<span class="ll-benchmark-value">{count(v.multi_defect_records)}</span>
-			<span class="stat-label">of them break more than one — a claim for a substituted model also mismatches its invoice (A5.2)</span>
+			<span class="stat-label">of them break more than one: a claim for a substituted model also mismatches its invoice (A5.2)</span>
 		</div>
 		<div class="stat">
 			<span class="ll-benchmark-value">{rebateShare}</span>
-			<span class="stat-label">of dollars paid went to distributor rebates — {count(fam.tier.flagged_records)} of {count(S.universe.statements)} statements were wrong</span>
+			<span class="stat-label">of dollars paid went to distributor rebates, where {count(fam.tier.flagged_records)} of {count(S.universe.statements)} statements were wrong</span>
 		</div>
 	</div>
 
@@ -301,8 +301,8 @@
 		<p class="body">
 			{pct(sub.records, v.flagged_records)} of wrong decisions started with something a member submitted. They
 			account for {dollars(sub.over + sub.under)} of the {dollars(v.over_cents + v.under_cents)} paid wrongly in
-			either direction. The other {dollars(calc.over + calc.under)} — {pct(calc.over + calc.under, v.over_cents + v.under_cents)}
-			— came from Galewick's own calculations. A member-submitted error averaged {dollars((sub.over + sub.under) / sub.records)};
+			either direction. The other {dollars(calc.over + calc.under)}, or {pct(calc.over + calc.under, v.over_cents + v.under_cents)},
+			came from Galewick's own calculations. A member-submitted error averaged {dollars((sub.over + sub.under) / sub.records)};
 			a Galewick calculation error averaged {dollars((calc.over + calc.under) / calc.records)}, and
 			{dollars(fam.tier.over_cents + fam.tier.under_cents)} of the total sits on {count(fam.tier.flagged_records)} distributor
 			rebate statements.
@@ -369,14 +369,14 @@
 			<a href="/rules">rulebook</a> is a seeded draw from a range with a stated basis, not a number anyone chose.
 		</p>
 		<p class="body">
-			The validator reads only what Galewick's systems would hold — claims, documents, invoices, credits,
-			statements — and the published rules. It never sees which errors were planted, and it finds every one of
+			The validator reads only what Galewick's systems would hold (claims, documents, invoices, credits,
+			statements) and the published rules. It never sees which errors were planted, and it finds every one of
 			them and nothing else.
 		</p>
 		{#each S.bounds as b}
 			<p class="footnote">
 				<strong>{b.result === 'PASS' ? 'Within' : 'Outside'} a published range.</strong>
-				{b.what}: {(b.measured_bp / 100).toFixed(1)}%, against {b.low_bp / 100}–{b.high_bp / 100}% reported by {b.source}.
+				{b.what}: {(b.measured_bp / 100).toFixed(1)}%, against {b.low_bp / 100}-{b.high_bp / 100}% reported by {b.source}.
 				{#if b.result !== 'PASS'}The error rates were not adjusted to close the gap.{/if}
 			</p>
 		{/each}
@@ -390,7 +390,7 @@
 		<p class="body">
 			The engagement version runs this same validation on your program: your published rules, your claims
 			and statement exports, every payout re-derived and every exception shown with the rule it breaks and
-			the dollars attached. The data here is synthetic; the method is not — and your program's rules are
+			the dollars attached. The data here is synthetic; the method is not. Your program's rules are
 			already written. The question is whether your payouts follow them.
 		</p>
 		<p class="body">
